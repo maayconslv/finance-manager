@@ -31,7 +31,7 @@
       "@/domain/*": ["domain/*"],
       "@/application/*": ["application/*"],
       "@/infrastructure/*": ["infrastructure/*"],
-      "@/presentation/*": ["presentation/*"]
+      "@/api/*": ["api/*"]
     }
   },
   "include": [

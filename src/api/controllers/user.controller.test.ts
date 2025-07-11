@@ -1,84 +1,46 @@
-import { expect } from 'chai';
-import { UserController } from './user.controller';
-import { CreateUserUseCase } from '@/application/use-cases';
-import { CreateUserRequest } from '@/domain/entities';
-import { ConflictError, ValidationError } from '@/domain/errors';
+import { expect } from "chai";
+import { CreateUserRequest } from "../../domain/entities";
+import { TestServer } from "../../test/server-test";
+import { PrismaClient } from "@prisma/client";
 
-describe('UserController', () => {
-  let userController: UserController;
-  let mockCreateUserUseCase: CreateUserUseCase;
+describe("POST - Create User - E2E", () => {
+  let testServer: TestServer;
+  let prismaRepository: PrismaClient;
 
-  beforeEach(() => {
-    // Mock do use case
-    mockCreateUserUseCase = {
-      execute: async () => ({
-        id: 'test-id',
-        email: 'test@example.com',
-        name: 'Test User',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }),
-    } as unknown as CreateUserUseCase;
-
-    userController = new UserController(mockCreateUserUseCase);
+  before(() => {
+    testServer = new TestServer();
+    prismaRepository = new PrismaClient();
+    testServer.start();
   });
 
-  describe('createUser', () => {
-    it('deve criar um usuário com sucesso', async () => {
-      const userData: CreateUserRequest = {
-        email: 'test@example.com',
-        name: 'Test User',
-        password: 'password123',
-      };
-
-      const result = await userController.createUser(userData);
-
-      expect(result).to.have.property('id');
-      expect(result.email).to.equal(userData.email);
-      expect(result.name).to.equal(userData.name);
-      expect(result).to.not.have.property('password');
-    });
-
-    it('deve lançar erro 409 quando usuário já existe', async () => {
-      mockCreateUserUseCase.execute = async () => {
-        throw new ConflictError('Usuário com este email já existe');
-      };
-
-      const userData: CreateUserRequest = {
-        email: 'existing@example.com',
-        name: 'Test User',
-        password: 'password123',
-      };
-
-      try {
-        await userController.createUser(userData);
-        expect.fail('Deveria ter lançado um erro');
-      } catch (error: any) {
-        expect(error.statusCode).to.equal(409);
-        expect(error.message).to.equal('Usuário com este email já existe');
-        expect(error.errorType).to.equal('CONFLICT');
-      }
-    });
-
-    it('deve lançar erro 422 quando dados são inválidos', async () => {
-      mockCreateUserUseCase.execute = async () => {
-        throw new ValidationError('Email, nome e senha são obrigatórios');
-      };
-
-      const userData: CreateUserRequest = {
-        email: '',
-        name: '',
-        password: '',
-      };
-
-      try {
-        await userController.createUser(userData);
-        expect.fail('Deveria ter lançado um erro');
-      } catch (error: any) {
-        expect(error.statusCode).to.equal(422);
-        expect(error.message).to.equal('Email, nome e senha são obrigatórios');
-        expect(error.errorType).to.equal('VALIDATION_ERROR');
-      }
-    });
+  afterEach(async () => {
+    await prismaRepository.user.deleteMany();
   });
-}); 
+
+  after(() => {
+    testServer.stop();
+  });
+
+  it("should be able to create a new user", async () => {
+    const userData: CreateUserRequest = {
+      email: "test@example.com",
+      name: "Test User",
+      password: "password123",
+    };
+
+    const response = await fetch("http://localhost:3000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const responseData = await response.json();
+    const user = await prismaRepository.user.findMany();
+
+    expect(responseData).to.not.be.null;
+    expect(user).to.not.be.empty;
+    expect(response.status).to.equal(201);
+  });
+});

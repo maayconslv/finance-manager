@@ -8,6 +8,7 @@ import { Container } from 'typedi';
 import { Container as ContainerDI } from '@/infrastructure/di/container';
 import { Logger } from '@/infrastructure/logger/logger';
 import { ErrorHandler } from '@/api/middleware/error-handler.middleware';
+import dotenv from 'dotenv';
 
 class App {
   private app: express.Application;
@@ -64,6 +65,12 @@ class App {
   }
 
   public start(): void {
+    if (process.env['TEST'] === 'OK') {
+      dotenv.config({ path: '.env.test' });
+    } else {
+      dotenv.config();
+    }
+
     const port = process.env['PORT'] || 3000;
 
     this.app.listen(port, () => {

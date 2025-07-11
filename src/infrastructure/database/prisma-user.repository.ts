@@ -2,13 +2,14 @@ import { Service } from 'typedi';
 import { PrismaClient } from '@prisma/client';
 import { IUserRepository } from '@/domain/repositories/user.repository';
 import { UserData, CreateUserRequest } from '@/domain/entities';
+import { datasource } from './database.config';
 
 @Service('UserRepository')
 export class UserRepository implements IUserRepository {
   private prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = datasource;
   }
 
   async create(userData: CreateUserRequest): Promise<UserData> {
@@ -16,7 +17,7 @@ export class UserRepository implements IUserRepository {
       data: {
         email: userData.email,
         name: userData.name,
-        password: userData.password, // Em produção, deve ser hasheada
+        password: userData.password,
       },
     });
 
