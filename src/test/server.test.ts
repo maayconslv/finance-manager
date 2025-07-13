@@ -2,8 +2,7 @@ import 'reflect-metadata';
 import express from 'express';
 import { useContainer, useExpressServer } from 'routing-controllers';
 import Container from 'typedi';
-import { Container as ContainerDI } from '@/infrastructure/di/container';
-import { ErrorHandler } from '@/api/middleware';
+import { TestContainer as ContainerDI } from './container.test';
 import { Server } from 'http';
 import path from 'node:path';
 
@@ -13,9 +12,9 @@ export class TestServer {
 
   constructor() {
     this.app = express();
+
     this.setupMiddleware();
     this.setupControllers();
-    this.setupErrorHandling();
   }
 
   public start(): Promise<void> {
@@ -55,14 +54,6 @@ export class TestServer {
       defaultErrorHandler: false,
       classTransformer: true,
       validation: true,
-    });
-
-  }
-
-  private setupErrorHandling(): void {
-    this.app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      const errorHandler = Container.get<ErrorHandler>('ErrorHandler');
-      errorHandler.error(error, req, res, next);
     });
   }
 }

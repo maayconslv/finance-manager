@@ -1,8 +1,9 @@
 import { Service } from 'typedi';
 import winston from 'winston';
+import { ILogger } from './logger.interface';
 
-@Service()
-export class Logger {
+@Service('Logger')
+export class Logger implements ILogger {
   private logger: winston.Logger;
 
   constructor() {
@@ -45,4 +46,4 @@ export class Logger {
   debug(message: string, meta?: any): void {
     this.logger.debug(message, meta);
   }
-} 
+}

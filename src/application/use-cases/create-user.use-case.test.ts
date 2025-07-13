@@ -1,27 +1,15 @@
 import { expect } from "chai";
 import { CreateUserUseCase } from "./create-user.use-case";
-import { IUserRepository } from "../../domain/repositories";
 import { CreateUserRequest } from "../../domain/entities";
+import { TestContainer } from "@/test";
+import Container from "typedi";
 
 describe("CreateUserUseCase", () => {
   let createUserUseCase: CreateUserUseCase;
-  let mockUserRepository: IUserRepository;
 
   beforeEach(() => {
-    mockUserRepository = {
-      create: async () => ({
-        id: "test-id",
-        email: "test@example.com",
-        name: "Test User",
-        password: "password123",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }),
-      findByEmail: async () => null,
-      findById: async () => null,
-    };
-
-    createUserUseCase = new CreateUserUseCase(mockUserRepository);
+    TestContainer.register();
+    createUserUseCase = Container.get(CreateUserUseCase);
   });
 
   it("should create a user with valid data", async () => {

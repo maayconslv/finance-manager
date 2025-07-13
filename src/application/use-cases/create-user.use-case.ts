@@ -1,13 +1,12 @@
-import { Inject, Service } from 'typedi';
+import { Service } from 'typedi';
 import { CreateUserRequest, UserResponse } from '@/domain/entities/user.entity';
 import { ConflictError, ValidationError } from '@/domain/errors';
-import { IUserRepository } from '@/domain/repositories';
+import { UserRepository } from '@/infrastructure/database';
 
 @Service()
 export class CreateUserUseCase {
   constructor(
-    @Inject('UserRepository')
-    private userRepository: IUserRepository,
+    private userRepository: UserRepository,
   ) {}
 
   async execute(userData: CreateUserRequest): Promise<UserResponse> {

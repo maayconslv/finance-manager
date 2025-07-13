@@ -1,10 +1,10 @@
 import { Service } from 'typedi';
 import { PrismaClient } from '@prisma/client';
-import { IUserRepository } from '@/domain/repositories/user.repository';
 import { UserData, CreateUserRequest } from '@/domain/entities';
 import { datasource } from './database.config';
+import { IUserRepository } from '@/domain/repositories';
 
-@Service('UserRepository')
+@Service()
 export class UserRepository implements IUserRepository {
   private prisma: PrismaClient;
 

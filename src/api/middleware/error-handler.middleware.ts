@@ -1,15 +1,18 @@
 import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
 import { Request, Response, NextFunction } from 'express';
-import { Logger } from '@/infrastructure/logger/logger';
-import { Service } from 'typedi';
+import { Service, Inject } from 'typedi';
 import { BaseError } from '@/domain/errors';
+import { ILogger } from '@/infrastructure/logger';
 
 @Middleware({ type: 'after' })
 @Service()
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {
-  constructor(private logger: Logger) {}
+  constructor(
+    @Inject('Logger') private logger: ILogger 
+  ) {}
 
   error(error: any, request: Request, response: Response, next: NextFunction): void {
+    console.log('[DEBUG Middleware] Error recebido:', error);
     this.logger.error('Error caught by middleware', {
       error: error.message,
       stack: error.stack,
@@ -56,4 +59,4 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 
     response.status(500).json(errorResponse);
   }
-} 
+}

@@ -1,4 +1,4 @@
-import { UserResponse, CreateUserRequest } from '../entities/user.entity';
+import { CreateUserRequest, UserResponse } from "../entities";
 
 export interface IUserRepository {
   create(userData: CreateUserRequest): Promise<UserResponse>;

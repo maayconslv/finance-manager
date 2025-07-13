@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { useExpressServer, useContainer } from 'routing-controllers';
 import { Container } from 'typedi';
-import { Container as ContainerDI } from '@/infrastructure/di/container';
+// import { Container as ContainerDI } from '@/infrastructure/di/container';
 import { Logger } from '@/infrastructure/logger/logger';
 import { ErrorHandler } from '@/api/middleware/error-handler.middleware';
 import dotenv from 'dotenv';
@@ -41,7 +41,7 @@ class App {
   }
 
   private setupControllers(): void {
-    ContainerDI.register();
+    // ContainerDI.register();
     useContainer(Container);
 
     useExpressServer(this.app, {
