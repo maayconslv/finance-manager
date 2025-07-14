@@ -4,11 +4,18 @@ import { PrismaClient } from "@prisma/client";
 import { RequestMaker } from "@/test";
 import { CreateUserRequest } from "@/application/dto";
 import { UserModel } from "@/application/model";
+import { faker } from "@faker-js/faker";
 
-describe("POST - Create User - E2E", () => {
+describe("Controller - Register a new user - POST", () => {
   let testServer: TestServer;
   let prismaRepository: PrismaClient;
   let requestMaker: RequestMaker;
+
+  let userData: CreateUserRequest = {
+    email: faker.internet.email(),
+    name: faker.person.fullName(),
+    password: faker.internet.password(),
+  };
 
   before(() => {
     requestMaker = new RequestMaker();
@@ -25,17 +32,107 @@ describe("POST - Create User - E2E", () => {
     testServer.stop();
   });
 
-  it("should be able to create a new user", async () => {
-    const userData: CreateUserRequest = {
-      email: "test@example.com",
-      name: "Test User",
-      password: "password123",
-    };
+  describe("validating user data", () => {
+    it("should not be able to create a user with an invalid email", async () => {
+      const invalidUserData = {
+        ...userData,
+        email: "invalid-email",
+      };
 
-    const response = await requestMaker.execute<UserModel>({ method: 'post', path: '/users', body: userData });
-    const user = await prismaRepository.user.findMany();
+      const response = await requestMaker.execute<UserModel>({
+        method: "post",
+        body: invalidUserData,
+        path: "/users",
+      });
 
-    expect(response.body.data).to.not.be.null;
-    expect(user).to.not.be.empty;
+      expect(response.body.errors).to.not.be.null;
+      expect(response.body.errors.message).to.equal("Validation failed");
+      expect(response.body.errors.details).to.not.be.empty;
+      expect(response.body.errors.errorType).to.equal("VALIDATION_ERROR");
+      expect(response.body.errors.statusCode).to.equal(400);
+      expect(response.body.errors.details[0]).to.be.equal('Please provide a valid email address');
+    });
+
+    it("should not be able to create a user with an invalid name", async () => {
+      const invalidUserData = {
+        ...userData,
+        name: 12312,
+      };
+      
+      const response = await requestMaker.execute<UserModel>({
+        method: "post",
+        body: invalidUserData,
+        path: "/users",
+      });
+
+      expect(response.body.errors).to.not.be.null;
+      expect(response.body.errors.message).to.equal("Validation failed");
+      expect(response.body.errors.details).to.not.be.empty;
+      expect(response.body.errors.errorType).to.equal("VALIDATION_ERROR");
+      expect(response.body.errors.statusCode).to.equal(400);
+      expect(response.body.errors.details[0]).to.be.equal('Please provide a valid name');
+      
+    });
+
+    it("should not be able to create a user with an invalid password", async () => {
+      const invalidUserData = {
+        ...userData,
+        password: "123",
+      };
+      
+      const response = await requestMaker.execute<UserModel>({
+        method: "post",
+        body: invalidUserData,
+        path: "/users",
+      });
+      
+      expect(response.body.errors).to.not.be.null;
+      expect(response.body.errors.message).to.equal("Validation failed");
+      expect(response.body.errors.details).to.not.be.empty;
+      expect(response.body.errors.errorType).to.equal("VALIDATION_ERROR");
+      expect(response.body.errors.statusCode).to.equal(400);
+      expect(response.body.errors.details[0]).to.be.equal('Password must be at least 6 characters long');
+    });
+  });
+
+  describe("saving in database", () => {
+    it("should be able to create a new user", async () => {
+      const response = await requestMaker.execute<UserModel>({
+        method: "post",
+        path: "/users",
+        body: userData,
+      });
+
+      const userResponse = response.body.data;
+      const userDatabase = await prismaRepository.user.findUniqueOrThrow({ where: { email: userData.email } });
+      
+      expect(userResponse.email).to.equal(userData.email);
+      expect(userData.email).to.equal(userDatabase.email);
+      expect(userResponse.name).to.equal(userData.name);
+      expect(userData.name).to.equal(userDatabase.name);
+      expect(userResponse.id).to.not.be.null;
+      expect(userDatabase.id).to.not.be.equal(userResponse.id);
+      expect(userDatabase.password).to.be.equal(userData.password);
+    });
+
+    it("should not be able to create a new user with an email that already exists", async () => {
+      await prismaRepository.user.create({
+        data: {
+          email: userData.email,
+          name: userData.name,
+          password: userData.password,
+        },
+      });
+      const response = await requestMaker.execute<UserModel>({
+        method: "post",
+        path: "/users",
+        body: userData,
+      });
+
+      expect(response.body.errors).to.not.be.null;
+      expect(response.body.errors.message).to.equal("User with this email already exists");
+      expect(response.body.errors.errorType).to.equal("CONFLICT");
+      expect(response.body.errors.statusCode).to.equal(409);
+    });
   });
 });

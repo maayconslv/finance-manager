@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { ErrorHandler } from './error-handler.middleware';
 import { Logger } from '@/infrastructure/logger';
 
-describe('ErrorHandler', () => {
+describe('ErrorHandler - Middleware', () => {
   let errorHandler: ErrorHandler;
   let mockLogger: Logger;
 
@@ -18,11 +18,11 @@ describe('ErrorHandler', () => {
   });
 
   describe('error', () => {
-    it('deve ser uma instância válida', () => {
+    it('should be a valid instance', () => {
       expect(errorHandler).to.be.instanceOf(ErrorHandler);
     });
 
-    it('deve ter o método error', () => {
+    it('should have the error method', () => {
       expect(errorHandler.error).to.be.a('function');
     });
   });

@@ -12,7 +12,6 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
   ) {}
 
   error(error: any, request: Request, response: Response, next: NextFunction): void {
-    console.log('[DEBUG Middleware] Error recebido:', error);
     this.logger.error('Error caught by middleware', {
       error: error.message,
       stack: error.stack,
@@ -21,6 +20,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
       ip: request.ip,
     });
 
+    
     if (response.headersSent) {
       return next(error);
     }
@@ -33,7 +33,24 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
         ...(process.env['NODE_ENV'] !== 'production' && { stack: error.stack }),
       };
 
-      response.status(error.statusCode).json(errorResponse);
+      response.status(error.statusCode).json({ errors: errorResponse });
+      return;
+    }
+
+    if (Array.isArray(error.errors) && error.errors.length > 0) {
+      const validationMessages = error.errors.flatMap((err: any) =>
+        Object.values(err.constraints || {})
+      );
+    
+      const errorResponse = {
+        message: 'Validation failed',
+        details: validationMessages,
+        errorType: 'VALIDATION_ERROR',
+        statusCode: error.httpCode || 400,
+        ...(process.env['NODE_ENV'] !== 'production' && { stack: error.stack }),
+      };
+    
+      response.status(error.httpCode || 400).json({ errors: errorResponse });
       return;
     }
 
@@ -48,6 +65,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
       response.status(error.httpCode).json(errorResponse);
       return;
     }
+
 
     const isProduction = process.env['NODE_ENV'] === 'production';
     const errorResponse = {

@@ -2,28 +2,20 @@ import { Service, Container as TypeDIContainer } from 'typedi';
 import { ILogger } from '@/infrastructure/logger';
 
 @Service()
-class MockLogger implements ILogger {
-  info(message: string, meta?: any): void {
-    console.log(`[TEST INFO] ${message}`, meta);
-  }
+class TestLogger implements ILogger {
+  info(_message: string, _meta?: any): void {}
 
-  error(message: string, meta?: any): void {
-    console.log(`[TEST ERROR] ${message}`, meta);
-  }
+  error(_message: string, _meta?: any): void {}
 
-  warn(message: string, meta?: any): void {
-    console.log(`[TEST WARN] ${message}`, meta);
-  }
+  warn(_message: string, _meta?: any): void {}
 
-  debug(message: string, meta?: any): void {
-    console.log(`[TEST DEBUG] ${message}`, meta);
-  }
+  debug(_message: string, _meta?: any): void {}
 }
 
 export class TestContainer {
   static register(): void {
     TypeDIContainer.reset();
 
-    TypeDIContainer.set<ILogger>('Logger', new MockLogger());
+    TypeDIContainer.set<ILogger>('Logger', new TestLogger());
   }
 }
