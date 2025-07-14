@@ -1,8 +1,9 @@
 import { expect } from "chai";
-import { CreateUserRequest, UserResponse } from "../../domain/entities";
 import { TestServer } from "../../test/server.test";
 import { PrismaClient } from "@prisma/client";
 import { RequestMaker } from "@/test";
+import { CreateUserRequest } from "@/application/dto";
+import { UserModel } from "@/application/model";
 
 describe("POST - Create User - E2E", () => {
   let testServer: TestServer;
@@ -31,8 +32,7 @@ describe("POST - Create User - E2E", () => {
       password: "password123",
     };
 
-    const response = await requestMaker.execute<UserResponse>({ method: 'post', path: '/users', body: userData });
-
+    const response = await requestMaker.execute<UserModel>({ method: 'post', path: '/users', body: userData });
     const user = await prismaRepository.user.findMany();
 
     expect(response.body.data).to.not.be.null;

@@ -1,7 +1,8 @@
-import { CreateUserRequest, UserResponse } from "../entities";
+import { CreateUserRequestDTO } from "@/application/dto";
+import { UserEntity } from "../entities";
 
 export interface IUserRepository {
-  create(userData: CreateUserRequest): Promise<UserResponse>;
-  findByEmail(email: string): Promise<UserResponse | null>;
-  findById(id: string): Promise<UserResponse | null>;
+  save(userData: CreateUserRequestDTO): Promise<UserEntity>;
+  findByEmail(email: string): Promise<UserEntity | null>;
+  findById(id: string): Promise<UserEntity | null>;
 } 

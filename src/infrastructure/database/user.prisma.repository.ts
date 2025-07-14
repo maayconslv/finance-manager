@@ -1,8 +1,9 @@
 import { Service } from 'typedi';
 import { PrismaClient } from '@prisma/client';
-import { UserData, CreateUserRequest } from '@/domain/entities';
 import { datasource } from './database.config';
 import { IUserRepository } from '@/domain/repositories';
+import { CreateUserRequestDTO } from '@/application/dto';
+import { UserEntity } from '@/domain/entities';
 
 @Service()
 export class UserRepository implements IUserRepository {
@@ -12,56 +13,18 @@ export class UserRepository implements IUserRepository {
     this.prisma = datasource;
   }
 
-  async create(userData: CreateUserRequest): Promise<UserData> {
-    const user = await this.prisma.user.create({
-      data: {
-        email: userData.email,
-        name: userData.name,
-        password: userData.password,
-      },
-    });
-
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      password: user.password,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+  async save(userData: CreateUserRequestDTO): Promise<UserEntity> {
+    const user = await this.prisma.user.create({ data: userData });
+    return UserEntity.rebuild(user);
   }
 
-  async findByEmail(email: string): Promise<UserData | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (!user) return null;
-
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      password: user.password,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    return user ? UserEntity.rebuild(user) : null;
   }
 
-  async findById(id: string): Promise<UserData | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!user) return null;
-
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      password: user.password,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+  async findById(id: string): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    return user ? UserEntity.rebuild(user) : null;
   }
 } 

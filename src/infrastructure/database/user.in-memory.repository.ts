@@ -1,22 +1,23 @@
-import { CreateUserRequest, UserData, UserResponse } from "@/domain/entities";
+import { CreateUserRequestDTO } from "@/application/dto";
+import { UserEntity } from "@/domain/entities";
 import { IUserRepository } from "@/domain/repositories";
 
 export class UserInMemoryRepository implements IUserRepository {
-  private users: UserData[] = [];
+  private users: UserEntity[] = [];
   
-  create(userData: CreateUserRequest): Promise<UserResponse> {
-    const user = { ...userData, id: crypto.randomUUID(), createdAt: new Date(), updatedAt: new Date() };
-    this.users.push(user);
+  save(userData: CreateUserRequestDTO): Promise<UserEntity> {
+    const user = UserEntity.create(userData);
+    this.users.push();
 
-    return Promise.resolve(user);
+    return Promise.resolve(UserEntity.rebuild(user));
   }
 
-  findByEmail(email: string): Promise<UserResponse | null> {
+  findByEmail(email: string): Promise<UserEntity | null> {
     const user = this.users.find((user) => user.email === email);
     return Promise.resolve(user || null);
   }
 
-  findById(id: string): Promise<UserResponse | null> {
+  findById(id: string): Promise<UserEntity | null> {
     const user = this.users.find((user) => user.id === id);
     return Promise.resolve(user || null);
   }
