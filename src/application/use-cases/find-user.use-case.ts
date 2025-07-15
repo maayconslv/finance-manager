@@ -1,19 +1,17 @@
-import { Service } from 'typedi';
-import { IUserRepository } from '@/domain/repositories';
-import { UserResponse } from '@/domain/entities/user.entity';
-import { NotFoundError } from '@/domain/errors';
+import { Service } from "typedi";
+import { IUserRepository } from "@/domain/repositories";
+import { UserResponse } from "@/domain/entities/user.entity";
+import { NotFoundError } from "@/domain/errors";
 
 @Service()
 export class FindUserUseCase {
-  constructor(
-    private userRepository: IUserRepository,
-  ) {}
+  constructor(private userRepository: IUserRepository) {}
 
   async execute(userId: string): Promise<UserResponse> {
     const user = await this.userRepository.findById(userId);
-    
+
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError("User not found");
     }
 
     return {
@@ -24,4 +22,4 @@ export class FindUserUseCase {
       updatedAt: user.updatedAt,
     };
   }
-} 
+}

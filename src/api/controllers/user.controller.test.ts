@@ -50,7 +50,7 @@ describe("Controller - Register a new user - POST", () => {
       expect(response.body.errors.details).to.not.be.empty;
       expect(response.body.errors.errorType).to.equal("VALIDATION_ERROR");
       expect(response.body.errors.statusCode).to.equal(400);
-      expect(response.body.errors.details[0]).to.be.equal('Please provide a valid email address');
+      expect(response.body.errors.details[0]).to.be.equal("Please provide a valid email address");
     });
 
     it("should not be able to create a user with an invalid name", async () => {
@@ -58,7 +58,7 @@ describe("Controller - Register a new user - POST", () => {
         ...userData,
         name: 12312,
       };
-      
+
       const response = await requestMaker.execute<UserModel>({
         method: "post",
         body: invalidUserData,
@@ -70,8 +70,7 @@ describe("Controller - Register a new user - POST", () => {
       expect(response.body.errors.details).to.not.be.empty;
       expect(response.body.errors.errorType).to.equal("VALIDATION_ERROR");
       expect(response.body.errors.statusCode).to.equal(400);
-      expect(response.body.errors.details[0]).to.be.equal('Please provide a valid name');
-      
+      expect(response.body.errors.details[0]).to.be.equal("Please provide a valid name");
     });
 
     it("should not be able to create a user with an invalid password", async () => {
@@ -79,19 +78,19 @@ describe("Controller - Register a new user - POST", () => {
         ...userData,
         password: "123",
       };
-      
+
       const response = await requestMaker.execute<UserModel>({
         method: "post",
         body: invalidUserData,
         path: "/users",
       });
-      
+
       expect(response.body.errors).to.not.be.null;
       expect(response.body.errors.message).to.equal("Validation failed");
       expect(response.body.errors.details).to.not.be.empty;
       expect(response.body.errors.errorType).to.equal("VALIDATION_ERROR");
       expect(response.body.errors.statusCode).to.equal(400);
-      expect(response.body.errors.details[0]).to.be.equal('Password must be at least 6 characters long');
+      expect(response.body.errors.details[0]).to.be.equal("Password must be at least 6 characters long");
     });
   });
 
@@ -105,7 +104,7 @@ describe("Controller - Register a new user - POST", () => {
 
       const userResponse = response.body.data;
       const userDatabase = await prismaRepository.user.findUniqueOrThrow({ where: { email: userData.email } });
-      
+
       expect(userResponse.email).to.equal(userData.email);
       expect(userData.email).to.equal(userDatabase.email);
       expect(userResponse.name).to.equal(userData.name);

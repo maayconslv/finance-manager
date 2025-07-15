@@ -1,18 +1,16 @@
-import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
-import { Request, Response, NextFunction } from 'express';
-import { Service, Inject } from 'typedi';
-import { BaseError } from '@/domain/errors';
-import { ILogger } from '@/infrastructure/logger';
+import { ExpressErrorMiddlewareInterface, Middleware } from "routing-controllers";
+import { Request, Response, NextFunction } from "express";
+import { Service, Inject } from "typedi";
+import { BaseError } from "@/domain/errors";
+import { ILogger } from "@/infrastructure/logger";
 
-@Middleware({ type: 'after' })
+@Middleware({ type: "after" })
 @Service()
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {
-  constructor(
-    @Inject('Logger') private logger: ILogger 
-  ) {}
+  constructor(@Inject("Logger") private logger: ILogger) {}
 
   error(error: any, request: Request, response: Response, next: NextFunction): void {
-    this.logger.error('Error caught by middleware', {
+    this.logger.error("Error caught by middleware", {
       error: error.message,
       stack: error.stack,
       url: request.url,
@@ -20,7 +18,6 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
       ip: request.ip,
     });
 
-    
     if (response.headersSent) {
       return next(error);
     }
@@ -30,7 +27,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
         message: error.message,
         errorType: error.errorType,
         statusCode: error.statusCode,
-        ...(process.env['NODE_ENV'] !== 'production' && { stack: error.stack }),
+        ...(process.env["NODE_ENV"] !== "production" && { stack: error.stack }),
       };
 
       response.status(error.statusCode).json({ errors: errorResponse });
@@ -38,39 +35,36 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
     }
 
     if (Array.isArray(error.errors) && error.errors.length > 0) {
-      const validationMessages = error.errors.flatMap((err: any) =>
-        Object.values(err.constraints || {})
-      );
-    
+      const validationMessages = error.errors.flatMap((err: any) => Object.values(err.constraints || {}));
+
       const errorResponse = {
-        message: 'Validation failed',
+        message: "Validation failed",
         details: validationMessages,
-        errorType: 'VALIDATION_ERROR',
+        errorType: "VALIDATION_ERROR",
         statusCode: error.httpCode || 400,
-        ...(process.env['NODE_ENV'] !== 'production' && { stack: error.stack }),
+        ...(process.env["NODE_ENV"] !== "production" && { stack: error.stack }),
       };
-    
+
       response.status(error.httpCode || 400).json({ errors: errorResponse });
       return;
     }
 
     if (error.httpCode) {
       const errorResponse = {
-        message: error.message || 'Erro da aplicação',
-        errorType: 'HTTP_ERROR',
+        message: error.message || "Erro da aplicação",
+        errorType: "HTTP_ERROR",
         statusCode: error.httpCode,
-        ...(process.env['NODE_ENV'] !== 'production' && { stack: error.stack }),
+        ...(process.env["NODE_ENV"] !== "production" && { stack: error.stack }),
       };
 
       response.status(error.httpCode).json(errorResponse);
       return;
     }
 
-
-    const isProduction = process.env['NODE_ENV'] === 'production';
+    const isProduction = process.env["NODE_ENV"] === "production";
     const errorResponse = {
-      message: isProduction ? 'Internal server error' : error.message,
-      errorType: 'INTERNAL_ERROR',
+      message: isProduction ? "Internal server error" : error.message,
+      errorType: "INTERNAL_ERROR",
       statusCode: 500,
       ...(isProduction ? {} : { stack: error.stack }),
     };

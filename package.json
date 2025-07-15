@@ -1,19 +1,19 @@
 {
-  "name": "@finance-manager/eslint-config",
+  "name": "finance-manager",
   "version": "1.0.0",
-  "description": "API de gerenciamento financeiro com Clean Architecture",
+  "description": "Financial Management API",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
-    "test": "NODE_ENV=test TEST=OK mocha -r ts-node/register ./src/**/*.test.ts",
+    "test": "dotenv -e .env.test mocha -r ts-node/register ./src/**/*.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:test": "dotenv -e .env.test -- prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "lint": "eslint 'src/**/*.ts'",
+    "lint:fix": "eslint 'src/**/*.ts' --fix"
   },
   "keywords": [
     "express",

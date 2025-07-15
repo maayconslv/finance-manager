@@ -6,8 +6,8 @@ export abstract class BaseError extends Error {
   constructor(
     message: string,
     statusCode: number = 500,
-    errorType: string = 'INTERNAL_ERROR',
-    isOperational: boolean = true
+    errorType: string = "INTERNAL_ERROR",
+    isOperational: boolean = true,
   ) {
     super(message);
     this.statusCode = statusCode;
@@ -16,4 +16,4 @@ export abstract class BaseError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
   }
-} 
+}

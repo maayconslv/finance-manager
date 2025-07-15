@@ -1,8 +1,8 @@
-import { expect } from 'chai';
-import { ErrorHandler } from './error-handler.middleware';
-import { Logger } from '@/infrastructure/logger';
+import { expect } from "chai";
+import { ErrorHandler } from "./error-handler.middleware";
+import { Logger } from "@/infrastructure/logger";
 
-describe('ErrorHandler - Middleware', () => {
+describe("ErrorHandler - Middleware", () => {
   let errorHandler: ErrorHandler;
   let mockLogger: Logger;
 
@@ -17,13 +17,13 @@ describe('ErrorHandler - Middleware', () => {
     errorHandler = new ErrorHandler(mockLogger);
   });
 
-  describe('error', () => {
-    it('should be a valid instance', () => {
+  describe("error", () => {
+    it("should be a valid instance", () => {
       expect(errorHandler).to.be.instanceOf(ErrorHandler);
     });
 
-    it('should have the error method', () => {
-      expect(errorHandler.error).to.be.a('function');
+    it("should have the error method", () => {
+      expect(errorHandler.error).to.be.a("function");
     });
   });
-}); 
+});

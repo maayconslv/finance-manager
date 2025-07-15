@@ -4,7 +4,7 @@ import { IUserRepository } from "@/domain/repositories";
 
 export class UserInMemoryRepository implements IUserRepository {
   private users: UserEntity[] = [];
-  
+
   save(userData: CreateUserRequestDTO): Promise<UserEntity> {
     const user = UserEntity.create(userData);
     this.users.push();

@@ -1,33 +1,32 @@
-import { Service } from 'typedi';
-import winston from 'winston';
-import { ILogger } from './logger.interface';
+import { Service } from "typedi";
+import winston from "winston";
+import { ILogger } from "./logger.interface";
 
-@Service('Logger')
+@Service("Logger")
 export class Logger implements ILogger {
   private logger: winston.Logger;
 
   constructor() {
     this.logger = winston.createLogger({
-      level: process.env['LOG_LEVEL'] || 'info',
+      level: process.env["LOG_LEVEL"] || "info",
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.errors({ stack: true }),
-        winston.format.json()
+        winston.format.json(),
       ),
-      defaultMeta: { service: 'financy-manager' },
+      defaultMeta: { service: "financy-manager" },
       transports: [
-        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'logs/combined.log' }),
+        new winston.transports.File({ filename: "logs/error.log", level: "error" }),
+        new winston.transports.File({ filename: "logs/combined.log" }),
       ],
     });
 
-    if (process.env['NODE_ENV'] !== 'production') {
-      this.logger.add(new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.simple()
-        )
-      }));
+    if (process.env["NODE_ENV"] !== "production") {
+      this.logger.add(
+        new winston.transports.Console({
+          format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+        }),
+      );
     }
   }
 

@@ -1,9 +1,9 @@
-import { Service } from 'typedi';
-import { PrismaClient } from '@prisma/client';
-import { datasource } from './database.config';
-import { IUserRepository } from '@/domain/repositories';
-import { CreateUserRequestDTO } from '@/application/dto';
-import { UserEntity } from '@/domain/entities';
+import { Service } from "typedi";
+import { PrismaClient } from "@prisma/client";
+import { datasource } from "./database.config";
+import { IUserRepository } from "@/domain/repositories";
+import { CreateUserRequestDTO } from "@/application/dto";
+import { UserEntity } from "@/domain/entities";
 
 @Service()
 export class UserRepository implements IUserRepository {
@@ -27,4 +27,4 @@ export class UserRepository implements IUserRepository {
     const user = await this.prisma.user.findUnique({ where: { id } });
     return user ? UserEntity.rebuild(user) : null;
   }
-} 
+}

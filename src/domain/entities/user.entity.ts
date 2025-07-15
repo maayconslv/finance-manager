@@ -30,26 +30,38 @@ export class UserEntity {
     this._password = user.password;
   }
 
-  get id(): string {return this._id }
-  get name(): string {return this._name }
-  get email(): string {return this._email }
-  get password(): string {return this._password }
-  get createdAt(): Date {return this._createdAt }
-  get updatedAt(): Date {return this._updatedAt }
+  get id(): string {
+    return this._id;
+  }
+  get name(): string {
+    return this._name;
+  }
+  get email(): string {
+    return this._email;
+  }
+  get password(): string {
+    return this._password;
+  }
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
 
   public static create(props: CreateUserProps): UserEntity {
     const { name, password, email } = props;
-    
+
     if (!name) {
-      throw new ValidationError('This field is required');
+      throw new ValidationError("This field is required");
     }
 
     if (!email) {
-      throw new ValidationError('This field is required');
+      throw new ValidationError("This field is required");
     }
 
     if (!password) {
-      throw new ValidationError('Password must be at least 6 characters long');
+      throw new ValidationError("Password must be at least 6 characters long");
     }
 
     return new UserEntity({
@@ -57,7 +69,7 @@ export class UserEntity {
       id: randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date(),
-    })
+    });
   }
 
   public static rebuild(user: UserProps): UserEntity {
@@ -68,7 +80,6 @@ export class UserEntity {
       password: user.password,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-    })
+    });
   }
-  
 }
