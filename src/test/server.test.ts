@@ -51,6 +51,7 @@ export class TestServer {
     useExpressServer(this.app, {
       controllers: [path.join(__dirname, "../api/controllers/*.controller.ts")],
       middlewares: [path.join(__dirname, "../api/middleware/*.middleware.ts")],
+      interceptors: [path.join(__dirname, "../api/controllers/*.interceptor.ts")],
       defaultErrorHandler: false,
       classTransformer: true,
       validation: true,
