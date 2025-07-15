@@ -1,9 +1,9 @@
 module.exports = {
   transpileOnly: true,
   compilerOptions: {
-    module: 'commonjs',
-    target: 'ES2020',
-    lib: ['ES2020'],
+    module: "commonjs",
+    target: "ES2020",
+    lib: ["ES2020"],
     experimentalDecorators: true,
     emitDecoratorMetadata: true,
     esModuleInterop: true,
@@ -12,13 +12,13 @@ module.exports = {
     skipLibCheck: true,
     forceConsistentCasingInFileNames: true,
     resolveJsonModule: true,
-    baseUrl: './src',
+    baseUrl: "./src",
     paths: {
-      '@/*': ['*'],
-      '@/domain/*': ['domain/*'],
-      '@/application/*': ['application/*'],
-      '@/infrastructure/*': ['infrastructure/*'],
-      '@/presentation/*': ['presentation/*']
-    }
-  }
-}; 
+      "@/*": ["*"],
+      "@/domain/*": ["domain/*"],
+      "@/application/*": ["application/*"],
+      "@/infrastructure/*": ["infrastructure/*"],
+      "@/presentation/*": ["presentation/*"],
+    },
+  },
+};

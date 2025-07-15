@@ -1,13 +1,13 @@
 import { Service } from "typedi";
 import { IUserRepository } from "@/domain/repositories";
-import { UserResponse } from "@/domain/entities/user.entity";
 import { NotFoundError } from "@/domain/errors";
+import { UserModel } from "../model";
 
 @Service()
 export class FindUserUseCase {
   constructor(private userRepository: IUserRepository) {}
 
-  async execute(userId: string): Promise<UserResponse> {
+  async execute(userId: string): Promise<UserModel> {
     const user = await this.userRepository.findById(userId);
 
     if (!user) {
@@ -18,8 +18,6 @@ export class FindUserUseCase {
       id: user.id,
       email: user.email,
       name: user.name,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
     };
   }
 }

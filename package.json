@@ -4,8 +4,8 @@
   "description": "Financial Management API",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
+    "build": "tsc --outDit ./dist",
+    "start": "node -r ./tsconfig-paths-dist.js dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
     "test": "dotenv -e .env.test mocha -r ts-node/register ./src/**/*.test.ts",
     "prisma:generate": "prisma generate",
