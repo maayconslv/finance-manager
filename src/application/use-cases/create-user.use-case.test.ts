@@ -11,7 +11,7 @@ describe("Application - Create a new user - Use cases", () => {
   let testContainer: ContainerInstance;
   let createUserUseCase: CreateUserUseCase;
 
-  let userData: CreateUserRequest = {
+  const userData: CreateUserRequest = {
     email: faker.internet.email(),
     name: faker.person.fullName(),
     password: faker.internet.password(),

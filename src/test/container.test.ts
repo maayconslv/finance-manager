@@ -1,5 +1,5 @@
-import { Service, Container as TypeDIContainer } from 'typedi';
-import { ILogger } from '@/infrastructure/logger';
+import { Service, Container as TypeDIContainer } from "typedi";
+import { ILogger } from "@/infrastructure/logger";
 
 @Service()
 class TestLogger implements ILogger {
@@ -16,6 +16,6 @@ export class TestContainer {
   static register(): void {
     TypeDIContainer.reset();
 
-    TypeDIContainer.set<ILogger>('Logger', new TestLogger());
+    TypeDIContainer.set<ILogger>("Logger", new TestLogger());
   }
 }

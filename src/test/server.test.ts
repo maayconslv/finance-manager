@@ -1,10 +1,11 @@
-import 'reflect-metadata';
-import express from 'express';
-import { useContainer, useExpressServer } from 'routing-controllers';
-import Container from 'typedi';
-import { TestContainer as ContainerDI } from './container.test';
-import { Server } from 'http';
-import path from 'node:path';
+import "reflect-metadata";
+import express from "express";
+import { useContainer, useExpressServer } from "routing-controllers";
+import Container from "typedi";
+import { TestContainer as ContainerDI } from "./container.test";
+import { Server } from "http";
+import path from "node:path";
+// import dotenv from "dotenv";
 
 export class TestServer {
   private app: express.Application;
@@ -28,11 +29,10 @@ export class TestServer {
   public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.server) {
-        this.server.close(err => {
+        this.server.close((err) => {
           if (err) {
             reject(err);
-          }
-          else resolve();
+          } else resolve();
         });
       } else {
         resolve();
@@ -49,8 +49,8 @@ export class TestServer {
     useContainer(Container);
 
     useExpressServer(this.app, {
-      controllers: [path.join(__dirname, '../api/controllers/*.controller.ts')],
-      middlewares: [path.join(__dirname, '../api/middleware/*.middleware.ts')],
+      controllers: [path.join(__dirname, "../api/controllers/*.controller.ts")],
+      middlewares: [path.join(__dirname, "../api/middleware/*.middleware.ts")],
       defaultErrorHandler: false,
       classTransformer: true,
       validation: true,
