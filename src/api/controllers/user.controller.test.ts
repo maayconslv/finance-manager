@@ -94,7 +94,7 @@ describe("Controller - Register a new user - POST", () => {
     });
   });
 
-  describe.only("saving in database", () => {
+  describe("saving in database", () => {
     it("should be able to create a new user", async () => {
       const response = await requestMaker.execute<UserModel>({
         method: "post",
