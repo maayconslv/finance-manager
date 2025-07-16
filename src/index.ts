@@ -39,7 +39,6 @@ class App {
   }
 
   private setupControllers(): void {
-    // ContainerDI.register();
     useContainer(Container);
 
     useExpressServer(this.app, {

@@ -10,13 +10,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Type {
+  income
+  outcome
+}
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  wallet Wallet?
+
+  Categories Categories[]
 
   @@map("users")
+}
+
+model Wallet {
+  id             String    @id @default(uuid())
+  name           String
+  initialBalance Int
+  currentBalance Int
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  BankAccount BankAccount[]
+  Transaction Transaction[]
+
+  @@map("wallets")
+}
+
+model BankAccount {
+  id             String    @id @default(uuid())
+  bankName       String
+  accountName    String
+  initialBalance Int
+  currentBalance Int
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  wallet      Wallet        @relation(fields: [walletId], references: [id])
+  walletId    String
+  Transaction Transaction[]
+
+  @@map("bank_accounts")
+}
+
+model Categories {
+  id         String @id @default(uuid())
+  name       String
+  color_code String
+  created_at String
+
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String
+  Transaction Transaction[]
+
+  @@map("categories")
+}
+
+model Transaction {
+  id          String    @id @default(uuid())
+  amount      Int
+  type        Type
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  bankAccount BankAccount @relation(fields: [bankAccountId], references: [id])
+  wallet      Wallet      @relation(fields: [walletId], references: [id])
+  category    Categories  @relation(fields: [categoryId], references: [id])
+
+  bankAccountId String
+  walletId      String
+  categoryId    String
+
+  @@map("transactions")
 }

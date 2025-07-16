@@ -24,7 +24,7 @@ export class CreateUserUseCase {
     await this.userRepository.save({ email: user.email, name: user.name, password: user.password });
 
     return {
-      id: user.id,
+      id: user.userId,
       email: user.email,
       name: user.name,
     };
