@@ -1,6 +1,7 @@
 import { BaseEntity } from "@/core/entities/base-entity";
 import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
 import { Optional } from "@/core/types/optional";
+import { CreateUserDataDTO } from "@/application/dto";
 
 interface UserProps {
   name: string;
@@ -40,5 +41,35 @@ export class UserEntity extends BaseEntity<UserProps> {
 
   public static create(props: Optional<UserProps, "createdAt">, id?: UniqueEntityId): UserEntity {
     return new UserEntity({ ...props, createdAt: new Date() }, id);
+  }
+
+  public static createWithCredentials(
+    email: string,
+    name: string,
+    password: string,
+    salt: string,
+    id?: UniqueEntityId,
+  ): UserEntity {
+    return new UserEntity(
+      {
+        email,
+        name,
+        password,
+        salt,
+        createdAt: new Date(),
+      },
+      id,
+    );
+  }
+
+  public toDTO(): CreateUserDataDTO {
+    return {
+      id: this.userId,
+      email: this.email,
+      name: this.name,
+      password: this.password,
+      salt: this.salt,
+      createdAt: this.createdAt,
+    };
   }
 }

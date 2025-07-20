@@ -5,6 +5,7 @@ import { WalletEntity } from "@/domain/entities/wallet.entity";
 import { CreateWalletDataDTO } from "@/application/dto/wallet.dto";
 import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
 import { IWalletRepository } from "@/domain/repositories/wallet.repository";
+import { Money } from "@/core/object-values/money";
 
 @Service()
 export class WalletRepository implements IWalletRepository {
@@ -20,9 +21,10 @@ export class WalletRepository implements IWalletRepository {
     return WalletEntity.create(
       {
         userId: new UniqueEntityId(wallet.userId),
-        initialBalance: wallet.initialBalance,
-        currentBalance: wallet.currentBalance,
+        currentBalance: Money.fromCents(wallet.currentBalance),
+        initialBalance: Money.fromCents(wallet.initialBalance),
         createdAt: wallet.createdAt,
+        updatedAt: wallet.updatedAt,
       },
       new UniqueEntityId(wallet.id),
     );

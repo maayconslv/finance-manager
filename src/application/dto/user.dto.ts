@@ -1,4 +1,4 @@
-import { IsEmail, IsNumber, IsString, MinLength } from "class-validator";
+import { IsEmail, IsString, MinLength } from "class-validator";
 
 export class CreateUserRequest {
   @IsEmail({}, { message: "Please provide a valid email address" })
@@ -11,8 +11,8 @@ export class CreateUserRequest {
   @MinLength(6, { message: "Password must be at least 6 characters long" })
   userPassword: string;
 
-  @IsNumber({}, { message: "Please provide a valid initial balance" })
-  initialBalance: number;
+  @IsString({ message: "Please provide a valid initial balance" })
+  initialBalance: string;
 }
 
 export interface CreateUserRequestDTO {
