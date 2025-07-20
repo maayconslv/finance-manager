@@ -3,6 +3,7 @@ import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
 
 interface WalletProps {
   id: UniqueEntityId;
+  userId: UniqueEntityId;
   name: string;
   initialBalance: number;
   currentBalance: number;
@@ -21,6 +22,9 @@ export class WalletEntity extends BaseEntity<WalletProps> {
   }
   get deletedAt() {
     return this.props.deletedAt;
+  }
+  get userId() {
+    return this.props.userId;
   }
 
   static create(props: WalletProps, id?: UniqueEntityId): WalletEntity {

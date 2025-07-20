@@ -9,11 +9,21 @@ export class CreateUserRequest {
 
   @IsString({ message: "Please provide a valid password" })
   @MinLength(6, { message: "Password must be at least 6 characters long" })
-  password: string;
+  userPassword: string;
 }
 
 export interface CreateUserRequestDTO {
   email: string;
   name: string;
   password: string;
+  salt: string;
+}
+
+export interface CreateUserDataDTO {
+  id: string;
+  email: string;
+  name: string;
+  password: string;
+  salt: string;
+  createdAt: Date;
 }

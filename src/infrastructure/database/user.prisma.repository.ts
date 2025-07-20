@@ -2,8 +2,9 @@ import { Service } from "typedi";
 import { PrismaClient } from "@prisma/client";
 import { datasource } from "./database.config";
 import { IUserRepository } from "@/domain/repositories";
-import { CreateUserRequestDTO } from "@/application/dto";
 import { UserEntity } from "@/domain/entities";
+import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
+import { CreateUserDataDTO } from "@/application/dto";
 
 @Service()
 export class UserRepository implements IUserRepository {
@@ -13,18 +14,35 @@ export class UserRepository implements IUserRepository {
     this.prisma = datasource;
   }
 
-  async save(userData: CreateUserRequestDTO): Promise<UserEntity> {
-    const user = await this.prisma.user.create({ data: userData });
-    return UserEntity.rebuild(user);
+  async save(data: CreateUserDataDTO): Promise<UserEntity> {
+    const user = await this.prisma.user.create({
+      data: {
+        email: data.email,
+        name: data.name,
+        passwordHash: data.password,
+        salt: data.salt,
+        createdAt: data.createdAt,
+        id: data.id,
+      },
+    });
+    return UserEntity.create({ ...user, password: user.passwordHash }, new UniqueEntityId(user.id));
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.prisma.user.findUnique({ where: { email } });
-    return user ? UserEntity.rebuild(user) : null;
+    if (!user) {
+      return null;
+    }
+
+    return UserEntity.create({ ...user, password: user.passwordHash }, new UniqueEntityId(user.id));
   }
 
   async findById(id: string): Promise<UserEntity | null> {
     const user = await this.prisma.user.findUnique({ where: { id } });
-    return user ? UserEntity.rebuild(user) : null;
+    if (!user) {
+      return null;
+    }
+
+    return UserEntity.create({ ...user, password: user.passwordHash }, new UniqueEntityId(user.id));
   }
 }

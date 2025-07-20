@@ -51,7 +51,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 
     if (error.httpCode) {
       const errorResponse = {
-        message: error.message || "Erro da aplicação",
+        message: error.message || "Internal server error",
         errorType: "HTTP_ERROR",
         statusCode: error.httpCode,
         ...(process.env["NODE_ENV"] !== "production" && { stack: error.stack }),

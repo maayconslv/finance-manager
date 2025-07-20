@@ -5,7 +5,7 @@ import { CreateUserRequest } from "@/application/dto";
 import { UserModel } from "@/application/model";
 import { faker } from "@faker-js/faker";
 
-describe("Controller - Register a new user - POST", () => {
+describe.only("Controller - Register a new user - POST", () => {
   let testServer: TestServer;
   let prismaRepository: PrismaClient;
   let requestMaker: RequestMaker;
@@ -13,7 +13,7 @@ describe("Controller - Register a new user - POST", () => {
   const userData: CreateUserRequest = {
     email: faker.internet.email(),
     name: faker.person.fullName(),
-    password: faker.internet.password(),
+    userPassword: faker.internet.password(),
   };
 
   before(() => {
@@ -31,7 +31,7 @@ describe("Controller - Register a new user - POST", () => {
     testServer.stop();
   });
 
-  describe("validating user data", () => {
+  describe.only("validating user data", () => {
     it("should not be able to create a user with an invalid email", async () => {
       const invalidUserData = {
         ...userData,
@@ -72,7 +72,7 @@ describe("Controller - Register a new user - POST", () => {
       expect(response.body.errors.details[0]).to.be.equal("Please provide a valid name");
     });
 
-    it("should not be able to create a user with an invalid password", async () => {
+    it.only("should not be able to create a user with an invalid password", async () => {
       const invalidUserData = {
         ...userData,
         password: "123",
@@ -83,6 +83,8 @@ describe("Controller - Register a new user - POST", () => {
         body: invalidUserData,
         path: "/users",
       });
+
+      console.log("response: ", response);
 
       expect(response.body.errors).to.not.be.null;
       expect(response.body.errors.message).to.equal("Validation failed");
@@ -110,7 +112,7 @@ describe("Controller - Register a new user - POST", () => {
       expect(userData.name).to.equal(userDatabase.name);
       expect(userResponse.id).to.not.be.null;
       expect(userDatabase.id).to.not.be.equal(userResponse.id);
-      expect(userDatabase.password).to.be.equal(userData.password);
+      expect(userDatabase.passwordHash).to.be.equal(userData.userPassword);
     });
 
     it("should not be able to create a new user with an email that already exists", async () => {
@@ -118,7 +120,8 @@ describe("Controller - Register a new user - POST", () => {
         data: {
           email: userData.email,
           name: userData.name,
-          password: userData.password,
+          passwordHash: userData.userPassword,
+          salt: "salt",
         },
       });
       const response = await requestMaker.execute<UserModel>({

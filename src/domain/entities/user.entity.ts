@@ -1,10 +1,14 @@
 import { BaseEntity } from "@/core/entities/base-entity";
 import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
+import { Optional } from "@/core/types/optional";
 
 interface UserProps {
   name: string;
   email: string;
   password: string;
+  salt: string;
+  createdAt: Date;
+  updatedAt?: Date | null;
 }
 
 export class UserEntity extends BaseEntity<UserProps> {
@@ -22,8 +26,19 @@ export class UserEntity extends BaseEntity<UserProps> {
     return this.id.toString();
   }
 
-  public static create(props: UserProps, id?: UniqueEntityId): UserEntity {
-    const user = new UserEntity(props, id);
-    return user;
+  get salt() {
+    return this.props.salt;
+  }
+
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
+  public static create(props: Optional<UserProps, "createdAt">, id?: UniqueEntityId): UserEntity {
+    return new UserEntity({ ...props, createdAt: new Date() }, id);
   }
 }

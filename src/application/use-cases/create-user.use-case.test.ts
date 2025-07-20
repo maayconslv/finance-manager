@@ -4,23 +4,30 @@ import { UserInMemoryRepository } from "@/infrastructure/database";
 import { ContainerInstance } from "typedi";
 import { faker } from "@faker-js/faker";
 import { ConflictError, ValidationError } from "@/domain/errors";
-import { CreateUserRequest } from "@/application/dto";
+import { UserEntity } from "@/domain/entities";
+import { CryptoService } from "@/domain/services/crypto.service";
+import { checkUser } from "@/test/checker.test";
 
 describe("Application - Create a new user - Use cases", () => {
   let testContainer: ContainerInstance;
   let createUserUseCase: CreateUserUseCase;
+  const inMemoryDatabase: UserEntity[] = [];
 
-  const userData: CreateUserRequest = {
+  const userData = {
     email: faker.internet.email(),
     name: faker.person.fullName(),
-    password: faker.internet.password(),
+    userPassword: faker.internet.password(),
   };
 
-  beforeEach(() => {
+  before(() => {
     testContainer = new ContainerInstance("test-container");
-    testContainer.set("UserRepository", new UserInMemoryRepository());
+    testContainer.set("UserRepository", new UserInMemoryRepository(inMemoryDatabase));
 
-    createUserUseCase = new CreateUserUseCase(testContainer.get("UserRepository"));
+    createUserUseCase = new CreateUserUseCase(testContainer.get("UserRepository"), new CryptoService());
+  });
+
+  beforeEach(() => {
+    inMemoryDatabase.length = 0;
   });
 
   afterEach(() => {
@@ -74,11 +81,12 @@ describe("Application - Create a new user - Use cases", () => {
   describe("when a user is created", () => {
     it("should create a user with a valid email, name and password", async () => {
       const result = await createUserUseCase.execute(userData);
+      const userInDatabase = inMemoryDatabase[0];
 
-      expect(result).to.have.property("id").to.be.and.string;
-      expect(result.email).to.equal(userData.email);
-      expect(result.name).to.equal(userData.name);
-      expect(result).to.not.have.property("password");
+      checkUser(result, userInDatabase!);
+      expect(userInDatabase!.password).to.be.a("string");
+      expect(userInDatabase!.salt).to.be.a("string");
+      expect(userInDatabase!.createdAt).to.be.a("date");
     });
 
     it("should not be able to create a user with an email already in use", async () => {

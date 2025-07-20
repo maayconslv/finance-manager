@@ -3,3 +3,8 @@ export interface UserModel {
   name: string;
   email: string;
 }
+
+export interface AuthenticatedUserModel {
+  user: UserModel;
+  token: string;
+}

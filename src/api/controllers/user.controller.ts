@@ -11,7 +11,7 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
-  async createUser(@Body() userData: CreateUserRequest): Promise<UserModel> {
-    return await this.createUserUseCase.execute(userData);
+  async createUser(@Body() data: CreateUserRequest): Promise<UserModel> {
+    return await this.createUserUseCase.execute(data);
   }
 }
