@@ -5,21 +5,26 @@ import { UserEntity } from "@/domain/entities";
 import { UserModel } from "../model";
 import { CryptoService } from "@/domain/services/crypto.service";
 import { BadRequestError } from "routing-controllers";
+import { WalletRepository } from "@/infrastructure/database/wallet.prisma.repository";
+import { WalletEntity } from "@/domain/entities/wallet.entity";
+import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
 
 interface CreateUserUseCaseProps {
   name: string;
   email: string;
   userPassword: string;
+  initialBalance: number;
 }
 
 @Service()
 export class CreateUserUseCase {
   constructor(
-    private userRepository: UserRepository,
     private cryptoService: CryptoService,
+    private userRepository: UserRepository,
+    private walletRepository: WalletRepository,
   ) {}
 
-  async execute({ email, name, userPassword }: CreateUserUseCaseProps): Promise<UserModel> {
+  async execute({ email, name, userPassword, initialBalance }: CreateUserUseCaseProps): Promise<UserModel> {
     this.validateUserPassword(userPassword);
 
     const userAlreadyExists = await this.userRepository.findByEmail(email);
@@ -31,6 +36,12 @@ export class CreateUserUseCase {
     const password = await this.cryptoService.createHashWithSalt(userPassword, salt);
 
     const user = UserEntity.create({ email, name, password, salt });
+    const wallet = WalletEntity.create({
+      initialBalance,
+      currentBalance: initialBalance,
+      userId: new UniqueEntityId(user.userId),
+    });
+
     await this.userRepository.save({
       id: user.userId,
       email: user.email,
@@ -38,6 +49,14 @@ export class CreateUserUseCase {
       password: user.password,
       salt: user.salt,
       createdAt: user.createdAt,
+    });
+
+    await this.walletRepository.save({
+      id: wallet.walletId,
+      currentBalance: wallet.currentBalance,
+      initialBalance: wallet.initialBalance,
+      userId: user.userId,
+      createdAt: wallet.createdAt,
     });
 
     return {

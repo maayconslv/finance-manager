@@ -33,7 +33,6 @@ model User {
 
 model Wallet {
   id             String    @id @default(uuid())
-  name           String
   initialBalance Int
   currentBalance Int
   createdAt      DateTime  @default(now())
