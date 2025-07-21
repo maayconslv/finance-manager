@@ -5,7 +5,7 @@ import { CreateUserRequest } from "@/application/dto";
 import { UserModel } from "@/application/model";
 import { faker } from "@faker-js/faker";
 
-describe.only("Controller - Register a new user - POST", () => {
+describe("Controller - Register a new user - POST", () => {
   let testServer: TestServer;
   let prismaRepository: PrismaClient;
   let requestMaker: RequestMaker;
@@ -77,7 +77,7 @@ describe.only("Controller - Register a new user - POST", () => {
     it("should not be able to create a user with an invalid password", async () => {
       const invalidUserData = {
         ...userData,
-        password: "123",
+        userPassword: "123",
       };
 
       const response = await requestMaker.execute<UserModel>({
@@ -85,8 +85,6 @@ describe.only("Controller - Register a new user - POST", () => {
         body: invalidUserData,
         path: "/users",
       });
-
-      console.log("response: ", response);
 
       expect(response.body.errors).to.not.be.null;
       expect(response.body.errors.message).to.equal("Validation failed");
@@ -107,14 +105,18 @@ describe.only("Controller - Register a new user - POST", () => {
 
       const userResponse = response.body.data;
       const userDatabase = await prismaRepository.user.findUniqueOrThrow({ where: { email: userData.email } });
+      const walletDatabase = await prismaRepository.wallet.findUniqueOrThrow({ where: { userId: userDatabase.id } });
 
       expect(userResponse.email).to.equal(userData.email);
       expect(userData.email).to.equal(userDatabase.email);
       expect(userResponse.name).to.equal(userData.name);
       expect(userData.name).to.equal(userDatabase.name);
       expect(userResponse.id).to.not.be.null;
-      expect(userDatabase.id).to.not.be.equal(userResponse.id);
-      expect(userDatabase.passwordHash).to.be.equal(userData.userPassword);
+      expect(userDatabase.id).to.be.equal(userResponse.id);
+      expect(userResponse.wallet.id).to.be.equal(walletDatabase.id);
+      expect(userResponse.wallet.userId).to.be.equal(userDatabase.id);
+      expect(userResponse.wallet.initialBalance.slice(3)).to.be.equal(userData.initialBalance);
+      expect(userResponse.wallet.currentBalance.slice(3)).to.be.equal(userData.initialBalance);
     });
 
     it("should not be able to create a new user with an email that already exists", async () => {
