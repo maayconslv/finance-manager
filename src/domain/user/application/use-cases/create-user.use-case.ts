@@ -1,12 +1,11 @@
 import { Service } from "typedi";
 import { ConflictError } from "@/domain/errors";
-import { UserRepository } from "@/infrastructure/database";
-import { UserEntity } from "@/domain/entities";
+import { UserEntity } from "@/domain/user/enterprise/entities";
 import { UserModel } from "../model";
 import { CryptoService } from "@/domain/services/crypto.service";
 import { BadRequestError } from "routing-controllers";
-import { WalletRepository } from "@/infrastructure/database/wallet.prisma.repository";
-import { WalletEntity } from "@/domain/entities/wallet.entity";
+import { WalletEntity } from "@/domain/user/enterprise/entities/wallet.entity";
+import { UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
 
 interface CreateUserUseCaseProps {
   name: string;
@@ -35,17 +34,17 @@ export class CreateUserUseCase {
     const password = await this.cryptoService.createHashWithSalt(userPassword, salt);
 
     const user = UserEntity.createWithCredentials(email, name, password, salt);
-    const wallet = WalletEntity.createWithInitialBalance(user.userId, initialBalance);
+    const wallet = WalletEntity.createWithInitialBalance(user.id, initialBalance);
 
-    await this.userRepository.save(user.toDTO());
-    await this.walletRepository.save(wallet.toDTO());
+    await this.userRepository.save(user);
+    await this.walletRepository.save(wallet);
 
     return {
-      id: user.userId,
+      id: user.id,
       email: user.email.toString(),
       name: user.name,
       wallet: {
-        id: wallet.walletId,
+        id: wallet.id,
         userId: wallet.userId.toString(),
         initialBalance: wallet.initialBalance.toBRL(),
         currentBalance: wallet.currentBalance.toBRL(),

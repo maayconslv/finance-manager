@@ -1,15 +1,15 @@
 import { expect } from "chai";
 import { CreateUserUseCase } from "./create-user.use-case";
-import { UserInMemoryRepository, UserRepository } from "@/infrastructure/database";
 import { Container, ContainerInstance } from "typedi";
 import { faker } from "@faker-js/faker";
 import { BadRequestError, ConflictError } from "@/domain/errors";
-import { UserEntity } from "@/domain/entities";
+import { UserEntity } from "@/domain/user/enterprise/entities";
 import { CryptoService } from "@/domain/services/crypto.service";
 import { checkUser, checkWallet } from "@/test/checker.test";
-import { WalletEntity } from "@/domain/entities/wallet.entity";
-import { WalletInMemoryRepository } from "@/infrastructure/database/wallet.in-memory.repository";
-import { WalletRepository } from "@/infrastructure/database/wallet.prisma.repository";
+import { WalletEntity } from "@/domain/user/enterprise/entities/wallet.entity";
+import { WalletInMemoryRepository } from "@/infrastructure/database/in-memory/wallet.in-memory.repository";
+import { UserInMemoryRepository } from "@/infrastructure/database/in-memory";
+import { UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
 
 describe("Application - Create a new user - Use cases", () => {
   let testContainer: ContainerInstance;

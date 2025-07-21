@@ -3,9 +3,13 @@ import { BadRequestError } from "@/domain/errors";
 export class Email {
   private value: string;
 
-  constructor(value: string) {
+  private constructor(value: string) {
     this.validateEmail(value);
     this.value = value;
+  }
+
+  static create(value: string): Email {
+    return new Email(value);
   }
 
   public toString() {

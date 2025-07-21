@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { PrismaClient } from "@prisma/client";
 import { RequestMaker, TestServer } from "@/test";
-import { CreateUserRequest } from "@/application/dto";
-import { UserModel } from "@/application/model";
+import { CreateUserRequest } from "@/domain/user/application/dto";
+import { UserModel } from "@/domain/user/application/model";
 import { faker } from "@faker-js/faker";
 
 describe("Controller - Register a new user - POST", () => {

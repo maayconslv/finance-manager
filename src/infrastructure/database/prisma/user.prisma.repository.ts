@@ -1,11 +1,10 @@
 import { Service } from "typedi";
 import { PrismaClient } from "@prisma/client";
-import { datasource } from "./database.config";
-import { IUserRepository } from "@/domain/repositories";
-import { UserEntity } from "@/domain/entities";
+import { IUserRepository } from "@/domain/user/application/repositories";
+import { UserEntity } from "@/domain/user/enterprise/entities";
 import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
-import { CreateUserDataDTO } from "@/application/dto";
 import { Email } from "@/core/object-values";
+import { datasource } from "../database.config";
 
 @Service()
 export class UserRepository implements IUserRepository {
@@ -15,26 +14,8 @@ export class UserRepository implements IUserRepository {
     this.prisma = datasource;
   }
 
-  async save(data: CreateUserDataDTO): Promise<UserEntity> {
-    const user = await this.prisma.user.create({
-      data: {
-        email: data.email,
-        name: data.name,
-        passwordHash: data.password,
-        salt: data.salt,
-        createdAt: data.createdAt,
-        id: data.id,
-      },
-    });
-    return UserEntity.create(
-      {
-        email: new Email(user.email),
-        name: user.name,
-        password: user.passwordHash,
-        salt: user.salt,
-      },
-      new UniqueEntityId(user.id),
-    );
+  async save(data: UserEntity): Promise<void> {
+    await this.prisma.user.create({ data: this.getUserDataFromEntity(data) });
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
@@ -45,7 +26,7 @@ export class UserRepository implements IUserRepository {
 
     return UserEntity.create(
       {
-        email: new Email(user.email),
+        email: Email.create(user.email),
         name: user.name,
         password: user.passwordHash,
         salt: user.salt,
@@ -62,12 +43,23 @@ export class UserRepository implements IUserRepository {
 
     return UserEntity.create(
       {
-        email: new Email(user.email),
+        email: Email.create(user.email),
         name: user.name,
         password: user.passwordHash,
         salt: user.salt,
       },
       new UniqueEntityId(user.id),
     );
+  }
+
+  private getUserDataFromEntity(user: UserEntity) {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email.toString(),
+      salt: user.salt,
+      passwordHash: user.password,
+      createdAt: user.createdAt,
+    };
   }
 }

@@ -1,7 +1,6 @@
 import { BaseEntity } from "@/core/entities/base-entity";
 import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
 import { Optional } from "@/core/types/optional";
-import { CreateUserDataDTO } from "@/application/dto";
 import { Email } from "@/core/object-values";
 
 interface UserProps {
@@ -22,10 +21,6 @@ export class UserEntity extends BaseEntity<UserProps> {
   }
   get password() {
     return this.props.password;
-  }
-
-  get userId() {
-    return this.id.toString();
   }
 
   get salt() {
@@ -53,7 +48,7 @@ export class UserEntity extends BaseEntity<UserProps> {
   ): UserEntity {
     return new UserEntity(
       {
-        email: new Email(email),
+        email: Email.create(email),
         name,
         password,
         salt,
@@ -61,16 +56,5 @@ export class UserEntity extends BaseEntity<UserProps> {
       },
       id,
     );
-  }
-
-  public toDTO(): CreateUserDataDTO {
-    return {
-      id: this.userId,
-      email: this.email.toString(),
-      name: this.name,
-      password: this.password,
-      salt: this.salt,
-      createdAt: this.createdAt,
-    };
   }
 }

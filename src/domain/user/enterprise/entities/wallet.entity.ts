@@ -1,7 +1,6 @@
 import { BaseEntity } from "@/core/entities/base-entity";
 import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
 import { Optional } from "@/core/types/optional";
-import { CreateWalletDataDTO } from "@/application/dto/wallet.dto";
 import { Money } from "@/core/object-values/money";
 
 interface WalletProps {
@@ -24,11 +23,7 @@ export class WalletEntity extends BaseEntity<WalletProps> {
     return this.props.deletedAt;
   }
   get userId() {
-    return this.props.userId;
-  }
-
-  get walletId() {
-    return this.id.toString();
+    return this.props.userId.toString();
   }
 
   get createdAt() {
@@ -50,15 +45,5 @@ export class WalletEntity extends BaseEntity<WalletProps> {
       },
       id,
     );
-  }
-
-  public toDTO(): CreateWalletDataDTO {
-    return {
-      id: this.walletId,
-      userId: this.userId.toString(),
-      initialBalance: this.initialBalance.getInCents(),
-      currentBalance: this.currentBalance.getInCents(),
-      createdAt: this.createdAt,
-    };
   }
 }
