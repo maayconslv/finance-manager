@@ -5,6 +5,7 @@ import { IUserRepository } from "@/domain/repositories";
 import { UserEntity } from "@/domain/entities";
 import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
 import { CreateUserDataDTO } from "@/application/dto";
+import { Email } from "@/core/object-values";
 
 @Service()
 export class UserRepository implements IUserRepository {
@@ -25,7 +26,15 @@ export class UserRepository implements IUserRepository {
         id: data.id,
       },
     });
-    return UserEntity.create({ ...user, password: user.passwordHash }, new UniqueEntityId(user.id));
+    return UserEntity.create(
+      {
+        email: new Email(user.email),
+        name: user.name,
+        password: user.passwordHash,
+        salt: user.salt,
+      },
+      new UniqueEntityId(user.id),
+    );
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
@@ -34,7 +43,15 @@ export class UserRepository implements IUserRepository {
       return null;
     }
 
-    return UserEntity.create({ ...user, password: user.passwordHash }, new UniqueEntityId(user.id));
+    return UserEntity.create(
+      {
+        email: new Email(user.email),
+        name: user.name,
+        password: user.passwordHash,
+        salt: user.salt,
+      },
+      new UniqueEntityId(user.id),
+    );
   }
 
   async findById(id: string): Promise<UserEntity | null> {
@@ -43,6 +60,14 @@ export class UserRepository implements IUserRepository {
       return null;
     }
 
-    return UserEntity.create({ ...user, password: user.passwordHash }, new UniqueEntityId(user.id));
+    return UserEntity.create(
+      {
+        email: new Email(user.email),
+        name: user.name,
+        password: user.passwordHash,
+        salt: user.salt,
+      },
+      new UniqueEntityId(user.id),
+    );
   }
 }

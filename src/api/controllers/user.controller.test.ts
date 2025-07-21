@@ -14,6 +14,7 @@ describe.only("Controller - Register a new user - POST", () => {
     email: faker.internet.email(),
     name: faker.person.fullName(),
     userPassword: faker.internet.password(),
+    initialBalance: "10.000,00",
   };
 
   before(() => {
@@ -24,6 +25,7 @@ describe.only("Controller - Register a new user - POST", () => {
   });
 
   afterEach(async () => {
+    await prismaRepository.wallet.deleteMany();
     await prismaRepository.user.deleteMany();
   });
 
@@ -31,7 +33,7 @@ describe.only("Controller - Register a new user - POST", () => {
     testServer.stop();
   });
 
-  describe.only("validating user data", () => {
+  describe("validating user data", () => {
     it("should not be able to create a user with an invalid email", async () => {
       const invalidUserData = {
         ...userData,
@@ -72,7 +74,7 @@ describe.only("Controller - Register a new user - POST", () => {
       expect(response.body.errors.details[0]).to.be.equal("Please provide a valid name");
     });
 
-    it.only("should not be able to create a user with an invalid password", async () => {
+    it("should not be able to create a user with an invalid password", async () => {
       const invalidUserData = {
         ...userData,
         password: "123",

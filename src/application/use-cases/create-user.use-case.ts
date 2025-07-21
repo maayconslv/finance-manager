@@ -42,10 +42,11 @@ export class CreateUserUseCase {
 
     return {
       id: user.userId,
-      email: user.email,
+      email: user.email.toString(),
       name: user.name,
       wallet: {
         id: wallet.walletId,
+        userId: wallet.userId.toString(),
         initialBalance: wallet.initialBalance.toBRL(),
         currentBalance: wallet.currentBalance.toBRL(),
         createdAt: wallet.createdAt,
@@ -55,7 +56,7 @@ export class CreateUserUseCase {
 
   private validateUserPassword(password: string) {
     if (password.length < 6) {
-      throw new BadRequestError("Password must be at least 8 characters long");
+      throw new BadRequestError("Password must be at least 6 characters long");
     }
   }
 }

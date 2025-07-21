@@ -15,7 +15,7 @@ export class Email {
   private validateEmail(email: string): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new BadRequestError("Invalid email");
+      throw new BadRequestError("Please, provide a valid email");
     }
   }
 }
