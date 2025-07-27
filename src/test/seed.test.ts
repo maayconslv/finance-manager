@@ -7,10 +7,9 @@ import { faker } from "@faker-js/faker";
 const cryptoService = new CryptoService();
 
 interface CreateUserData {
-  email: string;
+  email: Email;
   name: string;
   password: string;
-  salt: string;
 }
 
 interface CreateWalletData {
@@ -19,13 +18,13 @@ interface CreateWalletData {
   currentBalance: Money;
 }
 
-export async function createUser(data: Partial<CreateUserData>) {
-  const salt = data.salt ?? cryptoService.createSalt();
-  const password = await cryptoService.createHashWithSalt(data.password ?? faker.internet.password(), salt);
+export async function createUser(override: Partial<CreateUserData> = {}) {
+  const salt = cryptoService.createSalt();
+  const password = await cryptoService.createHashWithSalt(override.password ?? faker.internet.password(), salt);
 
   return UserEntity.create({
-    name: data.name ?? faker.person.fullName(),
-    email: Email.create(data.email ?? faker.internet.email()),
+    name: faker.person.fullName(),
+    email: override.email ?? Email.create(faker.internet.email()),
     password,
     salt,
   });
