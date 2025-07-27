@@ -46,9 +46,7 @@ export class CreateUserUseCase {
       wallet: {
         id: wallet.id,
         userId: wallet.userId.toString(),
-        initialBalance: wallet.initialBalance.toBRL(),
         currentBalance: wallet.currentBalance.toBRL(),
-        createdAt: wallet.createdAt,
       },
     };
   }

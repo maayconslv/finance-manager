@@ -13,6 +13,5 @@ export function checkUser(user: UserModel, entity: UserEntity) {
 export function checkWallet(wallet: WalletModel, entity: WalletEntity) {
   expect(wallet.id).to.be.equal(entity.id);
   expect(wallet.currentBalance).to.be.equal(entity.currentBalance.toBRL());
-  expect(wallet.initialBalance).to.be.equal(entity.initialBalance.toBRL());
   expect(wallet.userId).to.be.equal(entity.userId.toString());
 }

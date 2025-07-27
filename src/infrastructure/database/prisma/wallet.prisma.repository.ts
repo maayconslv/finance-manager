@@ -3,6 +3,7 @@ import { Service } from "typedi";
 import { WalletEntity } from "@/domain/user/enterprise/entities/wallet.entity";
 import { IWalletRepository } from "@/domain/user/application/repositories/wallet.repository";
 import { datasource } from "../database.config";
+import { Money, UniqueEntityId } from "@/core/object-values";
 
 @Service()
 export class WalletRepository implements IWalletRepository {
@@ -14,6 +15,24 @@ export class WalletRepository implements IWalletRepository {
 
   async save(data: WalletEntity): Promise<void> {
     await this.prisma.wallet.create({ data: this.getWalletDataFromEntity(data) });
+  }
+
+  async findByUserId(userId: string): Promise<WalletEntity | null> {
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) {
+      return null;
+    }
+
+    return WalletEntity.create(
+      {
+        userId: new UniqueEntityId(wallet.userId),
+        initialBalance: Money.fromCents(wallet.initialBalance),
+        currentBalance: Money.fromCents(wallet.currentBalance),
+        createdAt: wallet.createdAt,
+        updatedAt: wallet.updatedAt,
+      },
+      new UniqueEntityId(wallet.id),
+    );
   }
 
   private getWalletDataFromEntity(wallet: WalletEntity) {

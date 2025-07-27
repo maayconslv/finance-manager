@@ -7,4 +7,8 @@ export class WalletInMemoryRepository implements IWalletRepository {
   async save(data: WalletEntity): Promise<void> {
     this.wallets.push(data);
   }
+
+  async findByUserId(userId: string): Promise<WalletEntity | null> {
+    return this.wallets.find((wallet) => wallet.userId.toString() === userId) || null;
+  }
 }
