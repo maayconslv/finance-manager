@@ -42,9 +42,9 @@ class App {
     useContainer(Container);
 
     useExpressServer(this.app, {
-      controllers: [__dirname + "/api/controllers/*.controller.ts"],
-      middlewares: [__dirname + "/api/middleware/*.middleware.ts"],
-      interceptors: [__dirname + "/api/controllers/*.interceptor.ts"],
+      controllers: [__dirname + "/api/controllers/**/*.controller.ts"],
+      middlewares: [__dirname + "/api/middleware/**/*.middleware.ts"],
+      interceptors: [__dirname + "/api/controllers/**/*.interceptor.ts"],
       defaultErrorHandler: false,
       classTransformer: true,
       validation: true,

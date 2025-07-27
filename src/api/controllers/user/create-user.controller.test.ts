@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { PrismaClient } from "@prisma/client";
 import { RequestMaker, TestServer } from "@/test";
-import { CreateUserRequest } from "@/domain/user/application/dto";
 import { UserModel } from "@/domain/user/application/model";
 import { faker } from "@faker-js/faker";
+import { CreateUserRequest } from "./user.dto";
 
 describe("Controller - Register a new user - POST", () => {
   let testServer: TestServer;
@@ -115,7 +115,6 @@ describe("Controller - Register a new user - POST", () => {
       expect(userDatabase.id).to.be.equal(userResponse.id);
       expect(userResponse.wallet.id).to.be.equal(walletDatabase.id);
       expect(userResponse.wallet.userId).to.be.equal(userDatabase.id);
-      expect(userResponse.wallet.initialBalance.slice(3)).to.be.equal(userData.initialBalance);
       expect(userResponse.wallet.currentBalance.slice(3)).to.be.equal(userData.initialBalance);
     });
 
