@@ -7,7 +7,6 @@ import { BadRequestError } from "@/domain/errors";
 
 interface ForgotPasswordUseCaseRequest {
   email: string;
-  ipAddress: string;
 }
 
 @Service()
@@ -18,12 +17,7 @@ export class ForgotPasswordUseCase {
     private readonly resetPasswordRepository: ResetPasswordRepository,
   ) {}
 
-  async execute({ email, ipAddress }: ForgotPasswordUseCaseRequest): Promise<string> {
-    const recentAttemptsByIp = await this.resetPasswordRepository.findRecentAttemptsByIp(ipAddress);
-    if (recentAttemptsByIp >= 10) {
-      throw new BadRequestError("Too many attempts. Please try again later.");
-    }
-
+  async execute({ email }: ForgotPasswordUseCaseRequest): Promise<string> {
     const user = await this.userRepository.findByEmail(email);
 
     if (user) {
@@ -32,14 +26,10 @@ export class ForgotPasswordUseCase {
         throw new BadRequestError("Too many attempts. Please try again later.");
       }
 
-      await this.resetPasswordRepository.invalidateActiveTokens(user.id);
-
-      const { hashToken } = await this.createResetPassword(user.id, ipAddress);
+      const { hashToken } = await this.createResetPassword(user.id, "false-ip");
       await this.resetPasswordRepository.save(hashToken);
 
       // TODO: envia o email com o token;
-    } else {
-      await this.resetPasswordRepository.saveAttempt(ipAddress);
     }
 
     return "Email sent successfully";

@@ -40,10 +40,11 @@ model ResetPassword {
   expiresAt     DateTime
   usedAt        DateTime?
   invalidatedAt DateTime?
-  ip            String?
 
   user   User?   @relation(fields: [userId], references: [id])
   userId String?
+
+  @@map("reset_password")
 }
 
 model Wallet {

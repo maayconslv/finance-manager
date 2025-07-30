@@ -4,13 +4,15 @@ import { AuthenticatedUserModel, UserModel } from "@/domain/auth/application/mod
 import { CreateUserUseCase } from "@/domain/auth/application/use-cases";
 import { AuthenticateUseCase } from "@/domain/auth/application/use-cases/authenticate.use-case";
 import { AuthenticateUserRequest, CreateUserRequest } from "./auth.dto";
+import { ForgotPasswordUseCase } from "@/domain/auth/application/use-cases/forgot-password.use-case";
 
-@Controller("/users")
+@Controller("/auth")
 @Service()
 export class AuthController {
   constructor(
     private createUserUseCase: CreateUserUseCase,
     private authenticateUserUseCase: AuthenticateUseCase,
+    private forgotPasswordUseCase: ForgotPasswordUseCase,
   ) {}
 
   @Post()
@@ -23,5 +25,10 @@ export class AuthController {
   @HttpCode(200)
   async authenticate(@Body() data: AuthenticateUserRequest): Promise<AuthenticatedUserModel> {
     return await this.authenticateUserUseCase.execute(data);
+  }
+
+  @Post("/password/forgot")
+  async forgotPassword(@Body() data: any): Promise<string> {
+    return await this.forgotPasswordUseCase.execute({ email: data.email });
   }
 }
