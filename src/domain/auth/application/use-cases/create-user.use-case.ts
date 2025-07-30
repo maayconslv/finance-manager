@@ -1,15 +1,14 @@
 import { Service } from "typedi";
-import { ConflictError } from "@/domain/errors";
+import { BadRequestError, ConflictError } from "@/domain/errors";
 import { UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
 import { UserModel } from "../model";
 import { CryptoService } from "@/domain/services/crypto.service";
-import { BadRequestError } from "routing-controllers";
 import { UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
 
 interface CreateUserUseCaseProps {
   name: string;
   email: string;
-  userPassword: string;
+  password: string;
   initialBalance: string;
 }
 
@@ -21,8 +20,8 @@ export class CreateUserUseCase {
     private walletRepository: WalletRepository,
   ) {}
 
-  async execute({ email, name, userPassword, initialBalance }: CreateUserUseCaseProps): Promise<UserModel> {
-    this.validateUserPassword(userPassword);
+  async execute({ email, name, password, initialBalance }: CreateUserUseCaseProps): Promise<UserModel> {
+    this.validateUserPassword(password);
 
     const userAlreadyExists = await this.userRepository.findByEmail(email);
     if (userAlreadyExists) {
@@ -30,9 +29,9 @@ export class CreateUserUseCase {
     }
 
     const salt = this.cryptoService.createSalt();
-    const password = await this.cryptoService.createHashWithSalt(userPassword, salt);
+    const passwordHash = await this.cryptoService.createHashWithSalt(password, salt);
 
-    const user = UserEntity.createWithCredentials(email, name, password, salt);
+    const user = UserEntity.createWithCredentials(email, name, passwordHash, salt);
     const wallet = WalletEntity.createWithInitialBalance(user.id, initialBalance);
 
     await this.userRepository.save(user);

@@ -3,7 +3,7 @@ import { Service } from "typedi";
 import { AuthenticatedUserModel, UserModel } from "@/domain/auth/application/model";
 import { CreateUserUseCase } from "@/domain/auth/application/use-cases";
 import { AuthenticateUseCase } from "@/domain/auth/application/use-cases/authenticate.use-case";
-import { AuthenticateUserRequest, CreateUserRequest } from "./auth.dto";
+import { AuthenticateUserRequest, CreateUserRequest, ForgotPasswordRequest } from "./auth.dto";
 import { ForgotPasswordUseCase } from "@/domain/auth/application/use-cases/forgot-password.use-case";
 
 @Controller("/auth")
@@ -15,7 +15,7 @@ export class AuthController {
     private forgotPasswordUseCase: ForgotPasswordUseCase,
   ) {}
 
-  @Post()
+  @Post("/register")
   @HttpCode(201)
   async createUser(@Body() data: CreateUserRequest): Promise<UserModel> {
     return await this.createUserUseCase.execute(data);
@@ -28,7 +28,7 @@ export class AuthController {
   }
 
   @Post("/password/forgot")
-  async forgotPassword(@Body() data: any): Promise<string> {
-    return await this.forgotPasswordUseCase.execute({ email: data.email });
+  async forgotPassword(@Body() { email }: ForgotPasswordRequest): Promise<string> {
+    return await this.forgotPasswordUseCase.execute({ email });
   }
 }

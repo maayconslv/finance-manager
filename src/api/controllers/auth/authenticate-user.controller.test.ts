@@ -62,7 +62,7 @@ describe("Controller - Authenticate an user - POST", () => {
     const response = await requestMaker.execute<AuthenticatedUserModel>({
       method: "post",
       body: authenticateUserData,
-      path: "/users/authenticate",
+      path: "/auth/authenticate",
     });
     const { token, user } = response.body.data;
 

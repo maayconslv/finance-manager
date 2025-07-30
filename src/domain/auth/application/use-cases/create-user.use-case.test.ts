@@ -19,7 +19,7 @@ describe("Application - Create a new user - Use cases", () => {
   const userData = {
     email: faker.internet.email(),
     name: faker.person.fullName(),
-    userPassword: faker.internet.password(),
+    password: faker.internet.password(),
     initialBalance: "10.000,00",
   };
 

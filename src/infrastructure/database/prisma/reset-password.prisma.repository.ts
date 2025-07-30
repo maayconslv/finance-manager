@@ -49,28 +49,4 @@ export class ResetPasswordRepository implements IResetPasswordRepository {
       },
     });
   }
-
-  async findRecentAttemptsByIp(ip: string): Promise<number> {
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-    return this.prisma.resetPassword.count({
-      where: {
-        ip,
-        invalidatedAt: null,
-        createdAt: {
-          gte: oneHourAgo,
-        },
-      },
-    });
-  }
-
-  async saveAttempt(ip: string): Promise<void> {
-    await this.prisma.resetPassword.create({
-      data: {
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
-        ip,
-        userId: null,
-        token: "",
-      },
-    });
-  }
 }
