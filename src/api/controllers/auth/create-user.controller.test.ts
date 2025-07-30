@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { RequestMaker, TestServer } from "@/test";
 import { UserModel } from "@/domain/auth/application/model";
 import { faker } from "@faker-js/faker";
-import { CreateUserRequest } from "./user.dto";
+import { CreateUserRequest } from "./auth.dto";
 
 describe("Controller - Register a new user - POST", () => {
   let testServer: TestServer;

@@ -3,11 +3,11 @@ import { Service } from "typedi";
 import { AuthenticatedUserModel, UserModel } from "@/domain/auth/application/model";
 import { CreateUserUseCase } from "@/domain/auth/application/use-cases";
 import { AuthenticateUseCase } from "@/domain/auth/application/use-cases/authenticate.use-case";
-import { AuthenticateUserRequest, CreateUserRequest } from "./user.dto";
+import { AuthenticateUserRequest, CreateUserRequest } from "./auth.dto";
 
 @Controller("/users")
 @Service()
-export class UserController {
+export class AuthController {
   constructor(
     private createUserUseCase: CreateUserUseCase,
     private authenticateUserUseCase: AuthenticateUseCase,

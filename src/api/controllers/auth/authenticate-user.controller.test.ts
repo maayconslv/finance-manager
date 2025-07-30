@@ -1,6 +1,6 @@
 import { RequestMaker, TestServer } from "@/test";
 import { PrismaClient } from "@prisma/client";
-import { AuthenticateUserRequest } from "./user.dto";
+import { AuthenticateUserRequest } from "./auth.dto";
 import { createUser, createWallet } from "@/test/seed.test";
 import { AuthenticatedUserModel } from "@/domain/auth/application/model";
 import { UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
