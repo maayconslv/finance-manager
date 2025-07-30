@@ -26,9 +26,24 @@ model User {
 
   wallet Wallet?
 
-  Categories Categories[]
+  Categories    Categories[]
+  ResetPassword ResetPassword[]
 
   @@map("users")
+}
+
+model ResetPassword {
+  id            String    @id @default(uuid())
+  token         String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  expiresAt     DateTime
+  usedAt        DateTime?
+  invalidatedAt DateTime?
+  ip            String?
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }
 
 model Wallet {
