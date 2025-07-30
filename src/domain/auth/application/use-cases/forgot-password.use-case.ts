@@ -1,8 +1,7 @@
 import { CryptoService } from "@/domain/services/crypto.service";
-import { UserRepository } from "@/infrastructure/database/prisma";
+import { ResetPasswordRepository, UserRepository } from "@/infrastructure/database/prisma";
 import { Service } from "typedi";
 import { UniqueEntityId } from "@/core/object-values";
-import { ResetPasswordRepository } from "../repositories";
 import { ResetPasswordEntity } from "../../enterprise/entities";
 import { BadRequestError } from "@/domain/errors";
 

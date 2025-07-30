@@ -1,7 +1,6 @@
-import { UserModel } from "@/domain/user/application/model";
-import { WalletModel } from "@/domain/user/application/model/wallet.model";
-import { UserEntity } from "@/domain/user/enterprise/entities";
-import { WalletEntity } from "@/domain/user/enterprise/entities/wallet.entity";
+import { UserModel } from "@/domain/auth/application/model";
+import { WalletModel } from "@/domain/auth/application/model/wallet.model";
+import { UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
 import { expect } from "chai";
 
 export function checkUser(user: UserModel, entity: UserEntity) {

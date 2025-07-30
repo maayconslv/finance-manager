@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { PrismaClient } from "@prisma/client";
 import { RequestMaker, TestServer } from "@/test";
-import { UserModel } from "@/domain/user/application/model";
+import { UserModel } from "@/domain/auth/application/model";
 import { faker } from "@faker-js/faker";
 import { CreateUserRequest } from "./user.dto";
 

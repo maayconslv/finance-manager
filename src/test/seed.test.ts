@@ -1,7 +1,6 @@
 import { Email, Money, UniqueEntityId } from "@/core/object-values";
 import { CryptoService } from "@/domain/services/crypto.service";
-import { UserEntity } from "@/domain/user/enterprise/entities";
-import { WalletEntity } from "@/domain/user/enterprise/entities/wallet.entity";
+import { UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
 import { faker } from "@faker-js/faker";
 
 const cryptoService = new CryptoService();

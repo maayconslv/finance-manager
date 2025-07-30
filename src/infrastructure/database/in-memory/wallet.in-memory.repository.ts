@@ -1,5 +1,5 @@
-import { WalletEntity } from "@/domain/user/enterprise/entities/wallet.entity";
-import { IWalletRepository } from "@/domain/user/application/repositories/wallet.repository";
+import { WalletEntity } from "@/domain/auth/enterprise/entities";
+import { IWalletRepository } from "@/domain/auth/application/repositories";
 
 export class WalletInMemoryRepository implements IWalletRepository {
   constructor(private readonly wallets: WalletEntity[]) {}

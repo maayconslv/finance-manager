@@ -2,9 +2,8 @@ import { RequestMaker, TestServer } from "@/test";
 import { PrismaClient } from "@prisma/client";
 import { AuthenticateUserRequest } from "./user.dto";
 import { createUser, createWallet } from "@/test/seed.test";
-import { AuthenticatedUserModel } from "@/domain/user/application/model";
-import { UserEntity } from "@/domain/user/enterprise/entities";
-import { WalletEntity } from "@/domain/user/enterprise/entities/wallet.entity";
+import { AuthenticatedUserModel } from "@/domain/auth/application/model";
+import { UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
 import { expect } from "chai";
 
 describe("Controller - Authenticate an user - POST", () => {

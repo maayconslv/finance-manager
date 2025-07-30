@@ -1,5 +1,5 @@
-import { UserEntity } from "@/domain/user/enterprise/entities";
-import { IUserRepository } from "@/domain/user/application/repositories";
+import { UserEntity } from "@/domain/auth/enterprise/entities";
+import { IUserRepository } from "@/domain/auth/application/repositories";
 
 export class UserInMemoryRepository implements IUserRepository {
   constructor(private users: UserEntity[]) {}
