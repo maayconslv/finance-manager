@@ -29,7 +29,7 @@ export class ForgotPasswordUseCase {
         throw new BadRequestError("Too many attempts. Please try again later.");
       }
 
-      const { hashToken, token } = await this.createResetPassword(user.id, "false-ip");
+      const { hashToken, token } = await this.createResetPassword(user.id);
       await this.resetPasswordRepository.save(hashToken);
 
       await this.sendEmailService.sendEmail({
@@ -43,10 +43,7 @@ export class ForgotPasswordUseCase {
     return "Email sent successfully";
   }
 
-  private async createResetPassword(
-    userId: string,
-    ipAddress: string,
-  ): Promise<{ hashToken: ResetPasswordEntity; token: string }> {
+  private async createResetPassword(userId: string): Promise<{ hashToken: ResetPasswordEntity; token: string }> {
     const resetToken = this.cryptoService.createSalt();
     const resetTokenHash = await this.cryptoService.createHash(resetToken);
     const resetPassword = ResetPasswordEntity.create({
@@ -54,7 +51,6 @@ export class ForgotPasswordUseCase {
       userId: new UniqueEntityId(userId),
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes
-      ipAddress,
     });
 
     return { hashToken: resetPassword, token: resetToken };

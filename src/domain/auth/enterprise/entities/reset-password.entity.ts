@@ -8,7 +8,6 @@ interface ResetPasswordProps {
   updatedAt?: Date | null;
   expiresAt: Date;
   invalidatedAt?: Date | null;
-  ipAddress: string;
 }
 
 export class ResetPasswordEntity extends BaseEntity<ResetPasswordProps> {
@@ -26,10 +25,6 @@ export class ResetPasswordEntity extends BaseEntity<ResetPasswordProps> {
 
   get expiresAt() {
     return this.props.expiresAt;
-  }
-
-  get ipAddress() {
-    return this.props.ipAddress;
   }
 
   get invalidatedAt() {
