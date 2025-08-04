@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "target": "ES2020",
     "module": "commonjs",
     "lib": ["ES2020"],
@@ -37,7 +38,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "src/domain/services/emails"  ],
   "exclude": [
     "node_modules",
     "dist"

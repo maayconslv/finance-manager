@@ -23,7 +23,9 @@ export class Money {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
-    }).format(this.toDecimal());
+    })
+      .format(this.toDecimal())
+      .replace(/\u00A0/g, " ");
   }
 
   /**
@@ -57,7 +59,7 @@ export class Money {
    * @returns A new Money instance
    */
   static fromCents(cents: number): Money {
-    if (!Number.isInteger(cents)) {
+    if (!Number.isInteger(cents) || cents < 0) {
       throw new BadRequestError("Cents value must be an integer");
     }
 

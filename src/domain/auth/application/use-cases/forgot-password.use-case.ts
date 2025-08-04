@@ -4,10 +4,11 @@ import { Service } from "typedi";
 import { UniqueEntityId } from "@/core/object-values";
 import { ResetPasswordEntity } from "../../enterprise/entities";
 import { BadRequestError } from "@/domain/errors";
+import { SendEmailService } from "@/domain/services/emails";
+import ForgotPasswordTemplate from "@/domain/services/emails/templates/forgot-password.template";
 
 interface ForgotPasswordUseCaseRequest {
   email: string;
-  ipAddress: string;
 }
 
 @Service()
@@ -16,14 +17,10 @@ export class ForgotPasswordUseCase {
     private readonly userRepository: UserRepository,
     private readonly cryptoService: CryptoService,
     private readonly resetPasswordRepository: ResetPasswordRepository,
+    private readonly sendEmailService: SendEmailService,
   ) {}
 
-  async execute({ email, ipAddress }: ForgotPasswordUseCaseRequest): Promise<string> {
-    const recentAttemptsByIp = await this.resetPasswordRepository.findRecentAttemptsByIp(ipAddress);
-    if (recentAttemptsByIp >= 10) {
-      throw new BadRequestError("Too many attempts. Please try again later.");
-    }
-
+  async execute({ email }: ForgotPasswordUseCaseRequest): Promise<string> {
     const user = await this.userRepository.findByEmail(email);
 
     if (user) {
@@ -32,14 +29,15 @@ export class ForgotPasswordUseCase {
         throw new BadRequestError("Too many attempts. Please try again later.");
       }
 
-      await this.resetPasswordRepository.invalidateActiveTokens(user.id);
-
-      const { hashToken } = await this.createResetPassword(user.id, ipAddress);
+      const { hashToken, token } = await this.createResetPassword(user.id, "false-ip");
       await this.resetPasswordRepository.save(hashToken);
 
-      // TODO: envia o email com o token;
-    } else {
-      await this.resetPasswordRepository.saveAttempt(ipAddress);
+      await this.sendEmailService.sendEmail({
+        from: "onboarding@resend.dev",
+        to: email,
+        subject: "Redefinição de senha",
+        template: ForgotPasswordTemplate({ forgotPasswordToken: token }),
+      });
     }
 
     return "Email sent successfully";

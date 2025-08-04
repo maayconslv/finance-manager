@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { RequestMaker, TestServer } from "@/test";
 import { UserModel } from "@/domain/auth/application/model";
 import { faker } from "@faker-js/faker";
-import { CreateUserRequest } from "./user.dto";
+import { CreateUserRequest } from "./auth.dto";
 
 describe("Controller - Register a new user - POST", () => {
   let testServer: TestServer;
@@ -13,7 +13,7 @@ describe("Controller - Register a new user - POST", () => {
   const userData: CreateUserRequest = {
     email: faker.internet.email(),
     name: faker.person.fullName(),
-    userPassword: faker.internet.password(),
+    password: faker.internet.password(),
     initialBalance: "10.000,00",
   };
 
@@ -43,7 +43,7 @@ describe("Controller - Register a new user - POST", () => {
       const response = await requestMaker.execute<UserModel>({
         method: "post",
         body: invalidUserData,
-        path: "/users",
+        path: "/auth/register",
       });
 
       expect(response.body.errors).to.not.be.null;
@@ -63,7 +63,7 @@ describe("Controller - Register a new user - POST", () => {
       const response = await requestMaker.execute<UserModel>({
         method: "post",
         body: invalidUserData,
-        path: "/users",
+        path: "/auth/register",
       });
 
       expect(response.body.errors).to.not.be.null;
@@ -77,13 +77,13 @@ describe("Controller - Register a new user - POST", () => {
     it("should not be able to create a user with an invalid password", async () => {
       const invalidUserData = {
         ...userData,
-        userPassword: "123",
+        password: "123",
       };
 
       const response = await requestMaker.execute<UserModel>({
         method: "post",
         body: invalidUserData,
-        path: "/users",
+        path: "/auth/register",
       });
 
       expect(response.body.errors).to.not.be.null;
@@ -99,7 +99,7 @@ describe("Controller - Register a new user - POST", () => {
     it("should be able to create a new user", async () => {
       const response = await requestMaker.execute<UserModel>({
         method: "post",
-        path: "/users",
+        path: "/auth/register",
         body: userData,
       });
 
@@ -123,13 +123,13 @@ describe("Controller - Register a new user - POST", () => {
         data: {
           email: userData.email,
           name: userData.name,
-          passwordHash: userData.userPassword,
+          passwordHash: userData.password,
           salt: "salt",
         },
       });
       const response = await requestMaker.execute<UserModel>({
         method: "post",
-        path: "/users",
+        path: "/auth/register",
         body: userData,
       });
 

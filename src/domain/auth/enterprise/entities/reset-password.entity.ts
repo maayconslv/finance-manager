@@ -32,6 +32,14 @@ export class ResetPasswordEntity extends BaseEntity<ResetPasswordProps> {
     return this.props.ipAddress;
   }
 
+  get invalidatedAt() {
+    return this.props.invalidatedAt ?? null;
+  }
+
+  set invalidatedAt(value: Date | null) {
+    this.props.invalidatedAt = value;
+  }
+
   public static create(props: ResetPasswordProps, id?: UniqueEntityId): ResetPasswordEntity {
     return new ResetPasswordEntity(props, id);
   }
