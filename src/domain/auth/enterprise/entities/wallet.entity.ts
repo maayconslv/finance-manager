@@ -30,6 +30,10 @@ export class WalletEntity extends BaseEntity<WalletProps> {
     return this.props.createdAt;
   }
 
+  set increaseAmountInCents(value: number) {
+    this.currentBalance.increaseAmount(value);
+  }
+
   static create(props: Optional<WalletProps, "createdAt">, id?: UniqueEntityId): WalletEntity {
     const wallet = new WalletEntity({ ...props, createdAt: new Date() }, id);
     return wallet;
