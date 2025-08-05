@@ -6,6 +6,12 @@ import { datasource } from "../database.config";
 import { IUserRepository } from "@/domain/auth/application/repositories";
 import { UserEntity } from "@/domain/auth/enterprise/entities";
 
+interface UpdatePasswordData {
+  id: string;
+  password: string;
+  salt: string;
+}
+
 @Service()
 export class UserRepository implements IUserRepository {
   private prisma: PrismaClient;
@@ -50,6 +56,13 @@ export class UserRepository implements IUserRepository {
       },
       new UniqueEntityId(user.id),
     );
+  }
+
+  async updatePassword({ id, password, salt }: UpdatePasswordData): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: { passwordHash: password, salt },
+    });
   }
 
   private getUserDataFromEntity(user: UserEntity) {

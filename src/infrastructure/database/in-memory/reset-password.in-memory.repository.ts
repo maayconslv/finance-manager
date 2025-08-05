@@ -23,4 +23,23 @@ export class ResetPasswordInMemoryRepository implements IResetPasswordRepository
       }
     });
   }
+
+  async findAttemptByToken(token: string): Promise<ResetPasswordEntity | null> {
+    const resetAttemptToken = this.resetPasswords.find((item) => item.token === token);
+
+    if (!resetAttemptToken) {
+      return null;
+    }
+
+    return resetAttemptToken;
+  }
+
+  async useResetPasswordToken(token: string): Promise<void> {
+    this.resetPasswords.forEach((item) => {
+      if (item.token === token) {
+        item.usedAt = new Date();
+        item.invalidatedAt = new Date();
+      }
+    });
+  }
 }

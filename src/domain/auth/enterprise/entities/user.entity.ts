@@ -35,6 +35,14 @@ export class UserEntity extends BaseEntity<UserProps> {
     return this.props.updatedAt;
   }
 
+  set password(password: string) {
+    this.props.password = password;
+  }
+
+  set salt(salt: string) {
+    this.props.salt = salt;
+  }
+
   public static create(props: Optional<UserProps, "createdAt">, id?: UniqueEntityId): UserEntity {
     return new UserEntity({ ...props, createdAt: new Date() }, id);
   }

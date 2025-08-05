@@ -40,6 +40,7 @@ describe("Application - Authenticate an user - Use Case", () => {
     inMemoryUsers.length = 0;
     inMemoryWallets.length = 0;
 
+    // TODO: mover função para after()
     testContainer.reset();
   });
 

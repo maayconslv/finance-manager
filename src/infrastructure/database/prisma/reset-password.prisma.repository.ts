@@ -3,6 +3,7 @@ import { ResetPasswordEntity } from "@/domain/auth/enterprise/entities";
 import { PrismaClient } from "@prisma/client";
 import { Service } from "typedi";
 import { datasource } from "../database.config";
+import { UniqueEntityId } from "@/core/object-values";
 
 @Service()
 export class ResetPasswordRepository implements IResetPasswordRepository {
@@ -27,8 +28,9 @@ export class ResetPasswordRepository implements IResetPasswordRepository {
   async save(resetPassword: ResetPasswordEntity): Promise<void> {
     await this.prisma.resetPassword.create({
       data: {
+        userId: resetPassword.userId?.toString(),
         token: resetPassword.token,
-        userId: resetPassword.userId?.toString() ?? null,
+        invalidatedAt: resetPassword.invalidatedAt,
         createdAt: resetPassword.createdAt,
         expiresAt: resetPassword.expiresAt,
       },
@@ -45,6 +47,37 @@ export class ResetPasswordRepository implements IResetPasswordRepository {
         },
       },
       data: {
+        invalidatedAt: new Date(),
+      },
+    });
+  }
+
+  async findAttemptByToken(token: string): Promise<ResetPasswordEntity | null> {
+    const attempt = await this.prisma.resetPassword.findUnique({
+      where: {
+        token,
+      },
+    });
+
+    if (!attempt) {
+      return null;
+    }
+
+    return ResetPasswordEntity.create({
+      userId: new UniqueEntityId(attempt.userId),
+      token: attempt.token,
+      invalidatedAt: attempt.invalidatedAt,
+      createdAt: attempt.createdAt,
+      expiresAt: attempt.expiresAt,
+      usedAt: attempt.usedAt,
+    });
+  }
+
+  async useResetPasswordToken(token: string): Promise<void> {
+    await this.prisma.resetPassword.update({
+      where: { token },
+      data: {
+        usedAt: new Date(),
         invalidatedAt: new Date(),
       },
     });

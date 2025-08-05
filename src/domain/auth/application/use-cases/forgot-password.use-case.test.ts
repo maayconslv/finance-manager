@@ -106,7 +106,6 @@ describe("Application - Forgot Password - Use Case", () => {
       try {
         await sutWithError.execute({ email: user.email.toString() });
       } catch (error: any) {
-        console.log("error", error);
         expect(error.message).to.equal("Email service error");
       }
     });

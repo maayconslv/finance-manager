@@ -1,6 +1,12 @@
 import { UserEntity } from "@/domain/auth/enterprise/entities";
 import { IUserRepository } from "@/domain/auth/application/repositories";
 
+interface UpdatePasswordData {
+  id: string;
+  password: string;
+  salt: string;
+}
+
 export class UserInMemoryRepository implements IUserRepository {
   constructor(private users: UserEntity[]) {}
 
@@ -19,6 +25,15 @@ export class UserInMemoryRepository implements IUserRepository {
     return new Promise((resolve) => {
       const user = this.users.find((user) => user.id === id);
       resolve(user || null);
+    });
+  }
+
+  async updatePassword(data: UpdatePasswordData): Promise<void> {
+    this.users.forEach((user) => {
+      if (user.id === data.id) {
+        user.password = data.password;
+        user.salt = data.salt;
+      }
     });
   }
 }

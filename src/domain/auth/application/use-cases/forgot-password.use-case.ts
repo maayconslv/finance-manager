@@ -51,6 +51,7 @@ export class ForgotPasswordUseCase {
       userId: new UniqueEntityId(userId),
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes
+      usedAt: null,
     });
 
     return { hashToken: resetPassword, token: resetToken };
