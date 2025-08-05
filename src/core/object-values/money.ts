@@ -36,6 +36,14 @@ export class Money {
     return this.value;
   }
 
+  /**
+   * @description Adds the given amount to the current monetary value held by this object.
+   * @param {number} value - The amount to deposit, in the smallest currency unit (e.g., cents).
+   */
+  public increaseAmount(value: number): void {
+    this.value += value;
+  }
+
   private parseMoneyStringToCents(value: string): number {
     const moneyRegex = /^(\d{1,3}(\.\d{3})*|\d+),\d{2}$/;
 

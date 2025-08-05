@@ -11,7 +11,13 @@ export class UserInMemoryRepository implements IUserRepository {
   constructor(private users: UserEntity[]) {}
 
   async save(data: UserEntity): Promise<void> {
-    this.users.push(data);
+    const index = this.users.findIndex((user) => user.id === data.id);
+
+    if (index !== -1) {
+      this.users[index] = data;
+    } else {
+      this.users.push(data);
+    }
   }
 
   findByEmail(email: string): Promise<UserEntity | null> {

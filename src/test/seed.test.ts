@@ -40,10 +40,12 @@ export async function createUser(override: Partial<CreateUserData> = {}) {
 }
 
 export async function createWallet(data: Partial<CreateWalletData>) {
+  const initialBalance = faker.number.int({ min: 1000, max: 10000 });
+
   return WalletEntity.create({
     userId: new UniqueEntityId(data.userId),
-    initialBalance: data.initialBalance ?? Money.fromCents(faker.number.int({ min: 1000, max: 10000 })),
-    currentBalance: data.currentBalance ?? Money.fromCents(faker.number.int({ min: 1000, max: 10000 })),
+    initialBalance: data.initialBalance ?? Money.fromCents(initialBalance),
+    currentBalance: data.currentBalance ?? Money.fromCents(initialBalance),
   });
 }
 

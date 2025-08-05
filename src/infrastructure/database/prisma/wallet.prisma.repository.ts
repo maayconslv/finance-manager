@@ -14,7 +14,11 @@ export class WalletRepository implements IWalletRepository {
   }
 
   async save(data: WalletEntity): Promise<void> {
-    await this.prisma.wallet.create({ data: this.getWalletDataFromEntity(data) });
+    await this.prisma.wallet.upsert({
+      where: { id: data.id },
+      update: { currentBalance: data.currentBalance.getInCents() },
+      create: this.getWalletDataFromEntity(data),
+    });
   }
 
   async findByUserId(userId: string): Promise<WalletEntity | null> {
