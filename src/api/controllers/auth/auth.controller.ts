@@ -1,10 +1,8 @@
 import { Controller, Post, Body, HttpCode } from "routing-controllers";
 import { Service } from "typedi";
 import { AuthenticatedUserModel, UserModel } from "@/domain/auth/application/model";
-import { CreateUserUseCase } from "@/domain/auth/application/use-cases";
-import { AuthenticateUseCase } from "@/domain/auth/application/use-cases/authenticate.use-case";
+import { AuthenticateUseCase, CreateUserUseCase, ForgotPasswordUseCase } from "@/domain/auth/application/use-cases";
 import { AuthenticateUserRequest, CreateUserRequest, ForgotPasswordRequest } from "./auth.dto";
-import { ForgotPasswordUseCase } from "@/domain/auth/application/use-cases/forgot-password.use-case";
 
 @Controller("/auth")
 @Service()
