@@ -2,7 +2,7 @@ import Container from "typedi";
 import { CryptoService } from "./crypto.service";
 import { expect } from "chai";
 
-describe("teste do crypto", () => {
+describe("Services - Crypto Service", () => {
   let cryptoService: CryptoService;
 
   beforeEach(() => {
