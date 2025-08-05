@@ -11,3 +11,7 @@ export interface AuthenticatedUserModel {
   user: UserModel;
   token: string;
 }
+
+export interface UpdatePasswordModel {
+  message: string;
+}

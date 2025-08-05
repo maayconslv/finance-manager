@@ -1,8 +1,13 @@
-import { Controller, Post, Body, HttpCode } from "routing-controllers";
+import { Controller, Post, Body, HttpCode, Put, QueryParam } from "routing-controllers";
 import { Service } from "typedi";
 import { AuthenticatedUserModel, UserModel } from "@/domain/auth/application/model";
-import { AuthenticateUseCase, CreateUserUseCase, ForgotPasswordUseCase } from "@/domain/auth/application/use-cases";
-import { AuthenticateUserRequest, CreateUserRequest, ForgotPasswordRequest } from "./auth.dto";
+import {
+  AuthenticateUseCase,
+  CreateUserUseCase,
+  ForgotPasswordUseCase,
+  UpdatePasswordUseCase,
+} from "@/domain/auth/application/use-cases";
+import { AuthenticateUserRequest, CreateUserRequest, ForgotPasswordRequest, UpdatePasswordRequest } from "./auth.dto";
 
 @Controller("/auth")
 @Service()
@@ -11,6 +16,7 @@ export class AuthController {
     private createUserUseCase: CreateUserUseCase,
     private authenticateUserUseCase: AuthenticateUseCase,
     private forgotPasswordUseCase: ForgotPasswordUseCase,
+    private readonly updatePasswordUseCase: UpdatePasswordUseCase,
   ) {}
 
   @Post("/register")
@@ -28,5 +34,10 @@ export class AuthController {
   @Post("/password/forgot")
   async forgotPassword(@Body() { email }: ForgotPasswordRequest): Promise<string> {
     return await this.forgotPasswordUseCase.execute({ email });
+  }
+
+  @Put("/password")
+  async updatePassword(@Body() { password }: UpdatePasswordRequest, @QueryParam("token") token: string) {
+    return await this.updatePasswordUseCase.execute({ password, token });
   }
 }

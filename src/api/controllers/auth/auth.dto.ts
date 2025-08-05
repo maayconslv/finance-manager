@@ -27,3 +27,8 @@ export class ForgotPasswordRequest {
   @IsEmail({}, { message: "Please provide a valid email address" })
   email: string;
 }
+
+export class UpdatePasswordRequest {
+  @IsString()
+  password: string;
+}
