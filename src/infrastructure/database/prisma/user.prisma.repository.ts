@@ -8,7 +8,7 @@ import { UserEntity } from "@/domain/auth/enterprise/entities";
 
 interface UpdatePasswordData {
   id: string;
-  password: string;
+  passwordHash: string;
   salt: string;
 }
 
@@ -58,10 +58,10 @@ export class UserRepository implements IUserRepository {
     );
   }
 
-  async updatePassword({ id, password, salt }: UpdatePasswordData): Promise<void> {
+  async updatePassword({ id, passwordHash, salt }: UpdatePasswordData): Promise<void> {
     await this.prisma.user.update({
       where: { id },
-      data: { passwordHash: password, salt },
+      data: { passwordHash, salt },
     });
   }
 

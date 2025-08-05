@@ -4,14 +4,11 @@ import { CryptoService } from "@/domain/services/crypto.service";
 import { ResetPasswordRepository, UserRepository } from "@/infrastructure/database/prisma";
 import { Service } from "typedi";
 import { ResetPasswordEntity } from "../../enterprise/entities";
+import { UpdatePasswordModel } from "../model";
 
 interface UpdatePasswordUseCaseRequest {
   token: string;
   password: string;
-}
-
-interface UpdatePasswordUseCaseResponse {
-  message: string;
 }
 
 @Service()
@@ -22,7 +19,7 @@ export class UpdatePasswordUseCase {
     private readonly cryptoService: CryptoService,
   ) {}
 
-  async execute({ token, password }: UpdatePasswordUseCaseRequest): Promise<UpdatePasswordUseCaseResponse> {
+  async execute({ token, password }: UpdatePasswordUseCaseRequest): Promise<UpdatePasswordModel> {
     this.validateUserPassword(password);
 
     const resetPasswordHashToken = await this.cryptoService.createHash(token);
@@ -38,8 +35,8 @@ export class UpdatePasswordUseCase {
     const salt = this.cryptoService.createSalt();
     const passwordHash = await this.cryptoService.createHashWithSalt(password, salt);
 
-    Promise.all([
-      this.userRepository.updatePassword({ id: userUpdatingPassword.id, password: passwordHash, salt }),
+    await Promise.all([
+      this.userRepository.updatePassword({ id: userUpdatingPassword.id, passwordHash, salt }),
       this.resetPasswordRepository.useResetPasswordToken(resetPasswordHashToken),
       this.resetPasswordRepository.invalidateActiveTokens(userUpdatingPassword.id),
     ]);

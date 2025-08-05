@@ -2,7 +2,7 @@ import { UserEntity } from "../../enterprise/entities";
 
 interface UpdatePasswordData {
   id: string;
-  password: string;
+  passwordHash: string;
   salt: string;
 }
 export interface IUserRepository {

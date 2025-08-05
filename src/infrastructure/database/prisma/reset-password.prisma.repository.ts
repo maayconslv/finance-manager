@@ -74,6 +74,7 @@ export class ResetPasswordRepository implements IResetPasswordRepository {
   }
 
   async useResetPasswordToken(token: string): Promise<void> {
+    console.log("DEBUG - token", token);
     await this.prisma.resetPassword.update({
       where: { token },
       data: {

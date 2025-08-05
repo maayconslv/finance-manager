@@ -3,7 +3,7 @@ import { IUserRepository } from "@/domain/auth/application/repositories";
 
 interface UpdatePasswordData {
   id: string;
-  password: string;
+  passwordHash: string;
   salt: string;
 }
 
@@ -31,7 +31,7 @@ export class UserInMemoryRepository implements IUserRepository {
   async updatePassword(data: UpdatePasswordData): Promise<void> {
     this.users.forEach((user) => {
       if (user.id === data.id) {
-        user.password = data.password;
+        user.password = data.passwordHash;
         user.salt = data.salt;
       }
     });
