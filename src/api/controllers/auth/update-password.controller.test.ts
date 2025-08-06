@@ -60,6 +60,10 @@ describe("Controller - Update password - PUT", () => {
     await prismaRepository.user.deleteMany();
   });
 
+  after(() => {
+    testServer.stop();
+  });
+
   it("should be able to update the password", async () => {
     const response = await requestMaker.execute<UpdatePasswordModel>({
       method: "put",
