@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { Inject } from "typedi";
+import { Inject, Service } from "typedi";
 import { UnauthorizedError } from "@/domain/errors";
 import { ILogger } from "@/infrastructure/logger";
 import jwt from "jsonwebtoken";
+import { ExpressMiddlewareInterface } from "routing-controllers";
 
 interface JWTPayload {
   userId: string;
@@ -20,7 +21,8 @@ declare global {
   }
 }
 
-export class AuthMiddleware {
+@Service()
+export class AuthMiddleware implements ExpressMiddlewareInterface {
   constructor(@Inject("Logger") private logger: ILogger) {}
 
   use(request: Request, _response: Response, next: NextFunction): void {

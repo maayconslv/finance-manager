@@ -37,6 +37,7 @@ export default defineConfig([
       "@typescript-eslint/no-unused-expressions": "off",
       "no-undef": "off",
       "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-namespace": "off",
     },
   },
 ]);

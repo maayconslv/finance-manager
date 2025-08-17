@@ -5,6 +5,7 @@ import { RegisterBankAccountRequest } from "./bank-account.dto";
 import { createUser, createWallet } from "@/test/seed.test";
 import { BankAccountModel } from "@/domain/bank-account/application/model";
 import { expect } from "chai";
+import jwt from "jsonwebtoken";
 
 describe("Controller - Register bank account - POST", () => {
   let testServer: TestServer;
@@ -13,6 +14,7 @@ describe("Controller - Register bank account - POST", () => {
   let userData: UserEntity;
   let walletData: WalletEntity;
   let registerBankAccountData: RegisterBankAccountRequest;
+  let token: string;
 
   before(() => {
     requestMaker = new RequestMaker();
@@ -48,6 +50,8 @@ describe("Controller - Register bank account - POST", () => {
       accountName: "Conta Corrente",
       amount: "100,89",
     };
+
+    token = jwt.sign({ userId: userData.id }, process.env["JWT_SECRET"]!);
   });
 
   afterEach(async () => {
@@ -64,7 +68,10 @@ describe("Controller - Register bank account - POST", () => {
     const response = await requestMaker.execute<BankAccountModel>({
       method: "post",
       body: registerBankAccountData,
-      path: `/bank-account/${userData.id}`,
+      path: "/bank-account",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const bankAccountData = await prismaRepository.bankAccount.findFirst();
@@ -81,7 +88,10 @@ describe("Controller - Register bank account - POST", () => {
     const response = await requestMaker.execute<BankAccountModel>({
       method: "post",
       body: { ...registerBankAccountData, amount: "100,890" },
-      path: `/bank-account/${userData.id}`,
+      path: `/bank-account`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const bankAccountData = await prismaRepository.bankAccount.findMany();
@@ -89,5 +99,20 @@ describe("Controller - Register bank account - POST", () => {
     expect(response.body.errors.errorType).to.be.equal("BAD_REQUEST");
     expect(response.body.errors.statusCode).to.be.equal(400);
     expect(bankAccountData).to.be.empty;
+  });
+
+  it("should return a unauthorized error if the user is using a invalid token", async () => {
+    const response = await requestMaker.execute<BankAccountModel>({
+      method: "post",
+      body: registerBankAccountData,
+      path: "/bank-account",
+      headers: {
+        Authorization: `Bearer invalid-token`,
+      },
+    });
+
+    expect(response.body.errors.message).to.be.equal("Invalid token")
+    expect(response.body.errors.errorType).to.be.equal("UNAUTHORIZED")
+    expect(response.body.errors.statusCode).to.be.equal(401);
   });
 });
