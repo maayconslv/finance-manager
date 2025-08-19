@@ -18,4 +18,13 @@ export class BankAccountInMemoryRepository implements IBankAccountRepository {
       .filter((item) => item.walletId === walletId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
+
+  async findById(bankAccountId: string): Promise<BankAccountEntity | null> {
+    const bankAccount = this.bankAccounts.find((account) => account.id === bankAccountId);
+    if (!bankAccount) {
+      return null;
+    }
+
+    return bankAccount;
+  }
 }

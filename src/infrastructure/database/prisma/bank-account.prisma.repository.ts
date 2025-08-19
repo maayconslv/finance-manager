@@ -13,14 +13,21 @@ export class BankAccountRepository implements IBankAccountRepository {
   }
 
   async save(bankAccount: BankAccountEntity): Promise<void> {
-    await this.prisma.bankAccount.create({
-      data: {
+    await this.prisma.bankAccount.upsert({
+      where: { id: bankAccount.id },
+      create: {
         accountName: bankAccount.accountName,
         bankName: bankAccount.bankName,
         currentBalance: bankAccount.currentBalance.getInCents(),
         initialBalance: bankAccount.initialBalance.getInCents(),
         id: bankAccount.id,
         walletId: bankAccount.walletId,
+      },
+      update: {
+        accountName: bankAccount.accountName,
+        bankName: bankAccount.bankName,
+        currentBalance: bankAccount.currentBalance.getInCents(),
+        initialBalance: bankAccount.initialBalance.getInCents(),
       },
     });
   }
@@ -49,15 +56,17 @@ export class BankAccountRepository implements IBankAccountRepository {
   }
 
   private serializeBankAccount(data: BankAccount): BankAccountEntity {
-    return BankAccountEntity.create({
-      id: new UniqueEntityId(data.id),
-      accountName: data.accountName,
-      bankName: data.bankName,
-      currentBalance: Money.fromCents(data.currentBalance),
-      initialBalance: Money.fromCents(data.initialBalance),
-      walletId: new UniqueEntityId(data.walletId),
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
-    });
+    return BankAccountEntity.create(
+      {
+        accountName: data.accountName,
+        bankName: data.bankName,
+        currentBalance: Money.fromCents(data.currentBalance),
+        initialBalance: Money.fromCents(data.initialBalance),
+        walletId: new UniqueEntityId(data.walletId),
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      },
+      new UniqueEntityId(data.id),
+    );
   }
 }

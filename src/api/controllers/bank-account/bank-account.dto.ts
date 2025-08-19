@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class RegisterBankAccountRequest {
   @IsString()
@@ -9,4 +9,14 @@ export class RegisterBankAccountRequest {
 
   @IsString()
   amount: string;
+}
+
+export class UpdateBankAccountRequest {
+  @IsOptional()
+  @IsString()
+  bankName?: string;
+
+  @IsOptional()
+  @IsString()
+  accountName?: string;
 }

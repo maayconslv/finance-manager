@@ -1,8 +1,12 @@
 import { BankAccountModel } from "@/domain/Accounts/application/model";
-import { GetAccountsUseCase, RegisterBankAccountUseCase } from "@/domain/Accounts/application/use-cases";
-import { Body, Controller, Get, HttpCode, Post, Req, UseBefore } from "routing-controllers";
+import {
+  GetAccountsUseCase,
+  RegisterBankAccountUseCase,
+  UpdateAccountUseCase,
+} from "@/domain/Accounts/application/use-cases";
+import { Body, Controller, Get, HttpCode, Param, Post, Put, Req, UseBefore } from "routing-controllers";
 import { Service } from "typedi";
-import { RegisterBankAccountRequest } from "./bank-account.dto";
+import { RegisterBankAccountRequest, UpdateBankAccountRequest } from "./bank-account.dto";
 import { AuthMiddleware } from "@/api/middleware";
 import { AuthorizedRequest } from "@/api/types";
 
@@ -12,6 +16,7 @@ export class BankAccountController {
   constructor(
     private readonly registerBankAccountUseCase: RegisterBankAccountUseCase,
     private readonly getAllAccountsUseCase: GetAccountsUseCase,
+    private readonly updateAccountUseCase: UpdateAccountUseCase,
   ) {}
 
   @Post()
@@ -28,5 +33,15 @@ export class BankAccountController {
   @UseBefore(AuthMiddleware)
   async getAllAccounts(@Req() request: AuthorizedRequest) {
     return await this.getAllAccountsUseCase.execute({ userId: request.user.userId });
+  }
+
+  @Put("/:bankAccountId")
+  @UseBefore(AuthMiddleware)
+  async updateAccount(
+    @Param("bankAccountId") bankAccountId: string,
+    @Req() { user }: AuthorizedRequest,
+    @Body() data: UpdateBankAccountRequest,
+  ): Promise<BankAccountModel> {
+    return await this.updateAccountUseCase.execute({ ...data, userId: user.userId, bankAccountId });
   }
 }

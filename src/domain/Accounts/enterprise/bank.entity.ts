@@ -3,7 +3,6 @@ import { Money, UniqueEntityId } from "@/core/object-values";
 import { Optional } from "@/core/types/optional";
 
 interface BankAccountProps {
-  id?: UniqueEntityId;
   bankName: string;
   accountName: string;
   initialBalance: Money;
@@ -14,7 +13,7 @@ interface BankAccountProps {
 }
 
 export class BankAccountEntity extends BaseEntity<BankAccountProps> {
-  get name() {
+  get bankName() {
     return this.props.bankName;
   }
 
@@ -36,6 +35,14 @@ export class BankAccountEntity extends BaseEntity<BankAccountProps> {
 
   get createdAt() {
     return this.props.createdAt;
+  }
+
+  set bankName(bankName: string) {
+    this.props.bankName = bankName;
+  }
+
+  set accountName(accountName: string) {
+    this.props.accountName = accountName;
   }
 
   static create(props: Optional<BankAccountProps, "createdAt">, id?: UniqueEntityId): BankAccountEntity {
