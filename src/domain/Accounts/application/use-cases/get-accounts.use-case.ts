@@ -19,7 +19,7 @@ export class GetAccountsUseCase {
   async execute({ userId }: GetAllBankAccountsUseCaseRequest): Promise<UserAccountsModel> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new NotFoundError("Usuário não foi encontrado");
+      throw new NotFoundError("User not found");
     }
 
     const [bankAccounts, wallet] = await Promise.all([
