@@ -5,6 +5,7 @@ import { BankAccountEntity } from "../../enterprise";
 import { Money, UniqueEntityId } from "@/core/object-values";
 import { BankAccountRepository } from "@/infrastructure/database/prisma/bank-account.prisma.repository";
 import { InternalServerError } from "@/domain/errors/internal-server.error";
+import { BankAccountMapper } from "../mapper";
 
 interface RegisterBankAccountUseCaseRequest {
   bankName: string;
@@ -26,27 +27,20 @@ export class RegisterBankAccountUseCase {
       throw new InternalServerError("This user does not have an associated wallet.");
     }
 
-    const bankAmount = new Money(data.amount);
+    const initialBalance = new Money(data.amount);
+    const currentBalance = new Money(data.amount);
     const bankAccount = BankAccountEntity.create({
       accountName: data.accountName,
       bankName: data.bankName,
-      currentBalance: bankAmount,
-      initialBalance: bankAmount,
+      currentBalance,
+      initialBalance,
       walletId: new UniqueEntityId(wallet.id),
     });
 
-    wallet.increaseAmountInCents = bankAmount.getInCents();
+    wallet.increaseAmountInCents = initialBalance.getInCents();
 
-    await this.walletRepository.save(wallet);
-    await this.bankAccountRepository.save(bankAccount);
+    await Promise.all([this.walletRepository.save(wallet), this.bankAccountRepository.save(bankAccount)]);
 
-    return {
-      id: bankAccount.id,
-      accountName: bankAccount.accountName,
-      bankName: bankAccount.name,
-      currentBalance: bankAccount.currentBalance.toBRL(),
-      initialBalance: bankAccount.initialBalance.toBRL(),
-      walletId: wallet.id,
-    };
+    return BankAccountMapper.toModel(bankAccount);
   }
 }

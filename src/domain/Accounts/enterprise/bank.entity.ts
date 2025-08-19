@@ -3,7 +3,7 @@ import { Money, UniqueEntityId } from "@/core/object-values";
 import { Optional } from "@/core/types/optional";
 
 interface BankAccountProps {
-  id: UniqueEntityId;
+  id?: UniqueEntityId;
   bankName: string;
   accountName: string;
   initialBalance: Money;
