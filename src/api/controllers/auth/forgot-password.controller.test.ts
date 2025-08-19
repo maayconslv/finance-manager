@@ -1,4 +1,4 @@
-import { UserEntity } from "@/domain/auth/enterprise/entities";
+import { UserEntity } from "@/domain/Auth/enterprise/entities";
 import { SendEmailService } from "@/domain/services/emails";
 import { RequestMaker, TestServer } from "@/test";
 import { SendEmailMockService } from "@/test/email-service.mock";

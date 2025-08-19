@@ -1,5 +1,5 @@
-import { IResetPasswordRepository } from "@/domain/auth/application/repositories";
-import { ResetPasswordEntity } from "@/domain/auth/enterprise/entities";
+import { IResetPasswordRepository } from "@/domain/Auth/application/repositories";
+import { ResetPasswordEntity } from "@/domain/Auth/enterprise/entities";
 
 export class ResetPasswordInMemoryRepository implements IResetPasswordRepository {
   constructor(private resetPasswords: ResetPasswordEntity[]) {}

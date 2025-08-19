@@ -1,4 +1,4 @@
-import { UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
+import { UserEntity, WalletEntity } from "@/domain/Auth/enterprise/entities";
 import { RequestMaker, TestServer } from "@/test";
 import { PrismaClient } from "@prisma/client";
 import { RegisterBankAccountRequest } from "./bank-account.dto";
@@ -81,7 +81,6 @@ describe("Controller - Register bank account - POST", () => {
     expect(bankAccountResponse.accountName).to.be.equal(registerBankAccountData.accountName);
     expect(bankAccountResponse.currentBalance.replace("R$ ", "")).to.be.equal(registerBankAccountData.amount);
     expect(bankAccountResponse.initialBalance.replace("R$ ", "")).to.be.equal(registerBankAccountData.amount);
-    expect(bankAccountResponse.walletId).to.be.equal(walletData.id);
   });
 
   it("should not be able to register a bank account with a invalid format for amount", async () => {

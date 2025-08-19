@@ -15,4 +15,5 @@ export interface WalletModel {
 export interface UserAccountsModel {
   bankAccounts: BankAccountModel[];
   wallet: WalletModel;
+  totalAmount: string;
 }

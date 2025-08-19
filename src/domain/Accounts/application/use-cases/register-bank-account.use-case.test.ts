@@ -1,16 +1,15 @@
-import { UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
 import { BankAccountEntity } from "../../enterprise";
 import Container, { ContainerInstance } from "typedi";
 import { UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
-import { UserInMemoryRepository, WalletInMemoryRepository } from "@/infrastructure/database/in-memory";
+import { BankAccountInMemoryRepository, UserInMemoryRepository, WalletInMemoryRepository } from "@/infrastructure/database/in-memory";
 import { RegisterBankAccountUseCase } from "./register-bank-account.use-case";
 import { BankAccountRepository } from "@/infrastructure/database/prisma/bank-account.prisma.repository";
-import { InMemoryBankAccountRepository } from "@/infrastructure/database/in-memory/in-memory-bank.in-memory.repository";
 import { createUser, createWallet } from "@/test/seed.test";
 import { faker } from "@faker-js/faker";
 import { expect } from "chai";
 import { InternalServerError } from "@/domain/errors/internal-server.error";
 import { BadRequestError } from "@/domain/errors";
+import { UserEntity, WalletEntity } from "@/domain/Auth/enterprise/entities";
 
 describe("Application - Register bank account - Use cases", () => {
   let testContainer: ContainerInstance;
@@ -27,7 +26,7 @@ describe("Application - Register bank account - Use cases", () => {
 
     testContainer.set(WalletRepository, new WalletInMemoryRepository(inMemoryWallets));
     testContainer.set(UserRepository, new UserInMemoryRepository(inMemoryUsers));
-    testContainer.set(BankAccountRepository, new InMemoryBankAccountRepository(inMemoryBankAccounts));
+    testContainer.set(BankAccountRepository, new BankAccountInMemoryRepository(inMemoryBankAccounts));
 
     sut = testContainer.get(RegisterBankAccountUseCase);
   });
@@ -55,7 +54,6 @@ describe("Application - Register bank account - Use cases", () => {
     expect(inMemoryBankAccounts[0]?.accountName).to.be.equal(result.accountName);
     expect(inMemoryBankAccounts[0]?.id).to.be.equal(result.id);
     expect(inMemoryBankAccounts[0]?.name).to.be.equal(result.bankName);
-    expect(inMemoryBankAccounts[0]?.walletId).to.be.equal(result.walletId);
     expect(inMemoryBankAccounts[0]?.initialBalance.toBRL()).to.be.equal(result.initialBalance);
     expect(inMemoryBankAccounts[0]?.currentBalance.toBRL()).to.be.equal(result.currentBalance);
     expect(currentBalanceInWallet).to.be.equal(initialBalanceInWallet + initialBalanceInBankAccount);

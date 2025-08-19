@@ -3,6 +3,7 @@ import { Service } from "typedi";
 import { UserAccountsModel } from "../model";
 import { BankAccountMapper, WalletMapper } from "../mapper";
 import { BankAccountRepository, UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
+import { Money } from "@/core/object-values";
 
 interface GetAllBankAccountsUseCaseRequest {
   userId: string;
@@ -22,18 +23,21 @@ export class GetAccountsUseCase {
       throw new NotFoundError("User not found");
     }
 
-    const [bankAccounts, wallet] = await Promise.all([
-      this.bankRepository.getMany(user.id),
-      this.walletRepository.findByUserId(user.id),
-    ]);
-
+    const wallet = await this.walletRepository.findByUserId(user.id);
     if (!wallet) {
       throw new NotFoundError("Wallet not found.");
     }
 
+    const bankAccounts = await this.bankRepository.findManyByWalletId(wallet.id);
+
+    const bankAccountsTotalAmount = bankAccounts.reduce((acc, account) => acc + account.currentBalance.getInCents(), 0)
+    const walletTotalAmount = wallet.currentBalance.getInCents();
+    const totalAmount = Money.fromCents(bankAccountsTotalAmount + walletTotalAmount);
+
     return {
       bankAccounts: bankAccounts.map(BankAccountMapper.toModel),
       wallet: WalletMapper.toModel(wallet),
+      totalAmount: totalAmount.toBRL()
     };
   }
 }

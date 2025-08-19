@@ -3,7 +3,7 @@ import { CreateUserUseCase } from "./create-user.use-case";
 import { Container, ContainerInstance } from "typedi";
 import { faker } from "@faker-js/faker";
 import { BadRequestError, ConflictError } from "@/domain/errors";
-import { UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
+import { UserEntity, WalletEntity } from "@/domain/Auth/enterprise/entities";
 import { CryptoService } from "@/domain/services/crypto.service";
 import { checkUser, checkWallet } from "@/test/checker.test";
 import { WalletInMemoryRepository } from "@/infrastructure/database/in-memory/wallet.in-memory.repository";

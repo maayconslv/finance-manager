@@ -3,8 +3,8 @@ import { PrismaClient } from "@prisma/client";
 import { UniqueEntityId } from "@/core/object-values/unique-entity-id";
 import { Email } from "@/core/object-values";
 import { datasource } from "../database.config";
-import { IUserRepository } from "@/domain/auth/application/repositories";
-import { UserEntity } from "@/domain/auth/enterprise/entities";
+import { IUserRepository } from "@/domain/Auth/application/repositories";
+import { UserEntity } from "@/domain/Auth/enterprise/entities";
 
 interface UpdatePasswordData {
   id: string;

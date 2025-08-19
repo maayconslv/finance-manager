@@ -1,5 +1,5 @@
-import { UserEntity } from "@/domain/auth/enterprise/entities";
-import { IUserRepository } from "@/domain/auth/application/repositories";
+import { IUserRepository } from "@/domain/Auth/application/repositories";
+import { UserEntity } from "@/domain/Auth/enterprise/entities";
 
 interface UpdatePasswordData {
   id: string;

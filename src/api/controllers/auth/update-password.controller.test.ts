@@ -1,6 +1,6 @@
 import { UniqueEntityId } from "@/core/object-values";
-import { UpdatePasswordModel } from "@/domain/auth/application/model";
-import { ResetPasswordEntity, UserEntity } from "@/domain/auth/enterprise/entities";
+import { UpdatePasswordModel } from "@/domain/Auth/application/model";
+import { ResetPasswordEntity, UserEntity } from "@/domain/Auth/enterprise/entities";
 import { CryptoService } from "@/domain/services/crypto.service";
 import { SendEmailService } from "@/domain/services/emails";
 import { RequestMaker, TestServer } from "@/test";

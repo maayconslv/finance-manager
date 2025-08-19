@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { Service } from "typedi";
-import { WalletEntity } from "@/domain/auth/enterprise/entities";
-import { IWalletRepository } from "@/domain/auth/application/repositories";
 import { datasource } from "../database.config";
 import { Money, UniqueEntityId } from "@/core/object-values";
+import { IWalletRepository } from "@/domain/Auth/application/repositories";
+import { WalletEntity } from "@/domain/Auth/enterprise/entities";
 
 @Service()
 export class WalletRepository implements IWalletRepository {

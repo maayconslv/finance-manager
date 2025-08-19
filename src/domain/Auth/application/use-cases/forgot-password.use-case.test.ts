@@ -5,13 +5,12 @@ import { ResetPasswordRepository, UserRepository } from "@/infrastructure/databa
 import {
   UserInMemoryRepository,
   ResetPasswordInMemoryRepository,
-  SendEmailInMemoryService,
 } from "@/infrastructure/database/in-memory";
 import { CryptoService } from "@/domain/services/crypto.service";
 import { createUser } from "@/test/seed.test";
 import { expect } from "chai";
 import { BadRequestError } from "@/domain/errors";
-import { SendEmailService } from "@/domain/services/emails";
+import { SendEmailInMemoryService, SendEmailService } from "@/domain/services/emails";
 
 describe("Application - Forgot Password - Use Case", () => {
   let testContainer: ContainerInstance;

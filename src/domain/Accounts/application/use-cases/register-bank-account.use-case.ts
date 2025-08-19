@@ -37,9 +37,7 @@ export class RegisterBankAccountUseCase {
       walletId: new UniqueEntityId(wallet.id),
     });
 
-    wallet.increaseAmountInCents = initialBalance.getInCents();
-
-    await Promise.all([this.walletRepository.save(wallet), this.bankAccountRepository.save(bankAccount)]);
+    await this.bankAccountRepository.save(bankAccount);
 
     return BankAccountMapper.toModel(bankAccount);
   }
