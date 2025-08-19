@@ -34,6 +34,10 @@ export class BankAccountEntity extends BaseEntity<BankAccountProps> {
     return this.props.walletId.toString();
   }
 
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
   static create(props: Optional<BankAccountProps, "createdAt">, id?: UniqueEntityId): BankAccountEntity {
     return new BankAccountEntity({ ...props, createdAt: new Date() }, id);
   }

@@ -1,6 +1,5 @@
 import { Controller, Post, Body, HttpCode, Put, QueryParam } from "routing-controllers";
 import { Service } from "typedi";
-
 import { AuthenticateUserRequest, CreateUserRequest, ForgotPasswordRequest, UpdatePasswordRequest } from "./auth.dto";
 import { AuthenticatedUserModel, UserModel } from "@/domain/Auth/application/model";
 import {

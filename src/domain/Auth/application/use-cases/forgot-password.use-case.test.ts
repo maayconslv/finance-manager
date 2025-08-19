@@ -2,10 +2,7 @@ import Container, { ContainerInstance } from "typedi";
 import { ForgotPasswordUseCase } from "./forgot-password.use-case";
 import { ResetPasswordEntity, UserEntity } from "../../enterprise/entities";
 import { ResetPasswordRepository, UserRepository } from "@/infrastructure/database/prisma";
-import {
-  UserInMemoryRepository,
-  ResetPasswordInMemoryRepository,
-} from "@/infrastructure/database/in-memory";
+import { UserInMemoryRepository, ResetPasswordInMemoryRepository } from "@/infrastructure/database/in-memory";
 import { CryptoService } from "@/domain/services/crypto.service";
 import { createUser } from "@/test/seed.test";
 import { expect } from "chai";

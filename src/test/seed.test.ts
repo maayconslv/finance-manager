@@ -1,8 +1,9 @@
 import { Email, Money, UniqueEntityId } from "@/core/object-values";
 import { CryptoService } from "@/domain/services/crypto.service";
-import { ResetPasswordEntity, UserEntity, WalletEntity } from "@/domain/auth/enterprise/entities";
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "node:crypto";
+import { BankAccountEntity } from "@/domain/Accounts/enterprise";
+import { ResetPasswordEntity, UserEntity, WalletEntity } from "@/domain/Auth/enterprise/entities";
 
 const cryptoService = new CryptoService();
 
@@ -27,6 +28,14 @@ interface CreateResetPasswordData {
   usedAt: Date | null;
 }
 
+interface CreateBankAccountData {
+  accountName: string;
+  bankName: string;
+  currentBalance: Money;
+  initialBalance: Money;
+  walletId: UniqueEntityId;
+}
+
 export async function createUser(override: Partial<CreateUserData> = {}) {
   const salt = cryptoService.createSalt();
   const password = await cryptoService.createHashWithSalt(override.password ?? faker.internet.password(), salt);
@@ -46,6 +55,19 @@ export async function createWallet(data: Partial<CreateWalletData>) {
     userId: new UniqueEntityId(data.userId),
     initialBalance: data.initialBalance ?? Money.fromCents(initialBalance),
     currentBalance: data.currentBalance ?? Money.fromCents(initialBalance),
+  });
+}
+
+export function createBankAccount(override: Partial<CreateBankAccountData>) {
+  const initialBalance = faker.number.int({ min: 1000, max: 10000 });
+
+  return BankAccountEntity.create({
+    accountName: faker.person.firstName(),
+    bankName: faker.person.firstName(),
+    currentBalance: Money.fromCents(initialBalance),
+    initialBalance: Money.fromCents(initialBalance),
+    walletId: new UniqueEntityId(randomUUID()),
+    ...override,
   });
 }
 

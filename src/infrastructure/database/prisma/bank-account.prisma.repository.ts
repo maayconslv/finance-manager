@@ -28,6 +28,7 @@ export class BankAccountRepository implements IBankAccountRepository {
   async findManyByWalletId(walletId: string): Promise<BankAccountEntity[]> {
     const bankAccounts = await this.prisma.bankAccount.findMany({
       where: { walletId },
+      orderBy: { createdAt: "desc" },
     });
 
     return bankAccounts.map((item) => this.serializeBankAccount(item));

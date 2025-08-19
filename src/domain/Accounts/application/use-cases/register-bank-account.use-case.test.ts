@@ -1,7 +1,11 @@
 import { BankAccountEntity } from "../../enterprise";
 import Container, { ContainerInstance } from "typedi";
 import { UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
-import { BankAccountInMemoryRepository, UserInMemoryRepository, WalletInMemoryRepository } from "@/infrastructure/database/in-memory";
+import {
+  BankAccountInMemoryRepository,
+  UserInMemoryRepository,
+  WalletInMemoryRepository,
+} from "@/infrastructure/database/in-memory";
 import { RegisterBankAccountUseCase } from "./register-bank-account.use-case";
 import { BankAccountRepository } from "@/infrastructure/database/prisma/bank-account.prisma.repository";
 import { createUser, createWallet } from "@/test/seed.test";

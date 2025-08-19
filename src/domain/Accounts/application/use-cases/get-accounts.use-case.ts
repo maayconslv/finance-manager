@@ -25,19 +25,19 @@ export class GetAccountsUseCase {
 
     const wallet = await this.walletRepository.findByUserId(user.id);
     if (!wallet) {
-      throw new NotFoundError("Wallet not found.");
+      throw new NotFoundError("Wallet not found");
     }
 
     const bankAccounts = await this.bankRepository.findManyByWalletId(wallet.id);
 
-    const bankAccountsTotalAmount = bankAccounts.reduce((acc, account) => acc + account.currentBalance.getInCents(), 0)
+    const bankAccountsTotalAmount = bankAccounts.reduce((acc, account) => acc + account.currentBalance.getInCents(), 0);
     const walletTotalAmount = wallet.currentBalance.getInCents();
     const totalAmount = Money.fromCents(bankAccountsTotalAmount + walletTotalAmount);
 
     return {
       bankAccounts: bankAccounts.map(BankAccountMapper.toModel),
       wallet: WalletMapper.toModel(wallet),
-      totalAmount: totalAmount.toBRL()
+      totalAmount: totalAmount.toBRL(),
     };
   }
 }
