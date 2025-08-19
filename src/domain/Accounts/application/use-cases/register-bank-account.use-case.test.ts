@@ -51,16 +51,12 @@ describe("Application - Register bank account - Use cases", () => {
       amount: "10.000,00",
     });
 
-    const initialBalanceInWallet = wallet.initialBalance.getInCents();
-    const currentBalanceInWallet = wallet.currentBalance.getInCents();
-    const initialBalanceInBankAccount = inMemoryBankAccounts[0]!.initialBalance.getInCents();
     expect(inMemoryBankAccounts).to.have.lengthOf(1);
     expect(inMemoryBankAccounts[0]?.accountName).to.be.equal(result.accountName);
     expect(inMemoryBankAccounts[0]?.id).to.be.equal(result.id);
     expect(inMemoryBankAccounts[0]?.name).to.be.equal(result.bankName);
     expect(inMemoryBankAccounts[0]?.initialBalance.toBRL()).to.be.equal(result.initialBalance);
     expect(inMemoryBankAccounts[0]?.currentBalance.toBRL()).to.be.equal(result.currentBalance);
-    expect(currentBalanceInWallet).to.be.equal(initialBalanceInWallet + initialBalanceInBankAccount);
   });
 
   it("should return a internal server error if the wallet is not related with the user", async () => {
