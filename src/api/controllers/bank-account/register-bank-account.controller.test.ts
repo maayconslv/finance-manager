@@ -3,7 +3,7 @@ import { RequestMaker, TestServer } from "@/test";
 import { PrismaClient } from "@prisma/client";
 import { RegisterBankAccountRequest } from "./bank-account.dto";
 import { createUser, createWallet } from "@/test/seed.test";
-import { BankAccountModel } from "@/domain/bank-account/application/model";
+import { BankAccountModel } from "@/domain/Accounts/application/model";
 import { expect } from "chai";
 import jwt from "jsonwebtoken";
 
@@ -111,8 +111,8 @@ describe("Controller - Register bank account - POST", () => {
       },
     });
 
-    expect(response.body.errors.message).to.be.equal("Invalid token")
-    expect(response.body.errors.errorType).to.be.equal("UNAUTHORIZED")
+    expect(response.body.errors.message).to.be.equal("Invalid token");
+    expect(response.body.errors.errorType).to.be.equal("UNAUTHORIZED");
     expect(response.body.errors.statusCode).to.be.equal(401);
   });
 });

@@ -1,6 +1,6 @@
 import { WalletRepository } from "@/infrastructure/database/prisma";
 import { Service } from "typedi";
-import { BankAccountModel } from "../model/bank-account.model";
+import { BankAccountModel } from "../model/accounts.model";
 import { BankAccountEntity } from "../../enterprise";
 import { Money, UniqueEntityId } from "@/core/object-values";
 import { BankAccountRepository } from "@/infrastructure/database/prisma/bank-account.prisma.repository";
