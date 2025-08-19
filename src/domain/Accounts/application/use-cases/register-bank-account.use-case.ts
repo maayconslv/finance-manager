@@ -37,6 +37,8 @@ export class RegisterBankAccountUseCase {
       walletId: new UniqueEntityId(wallet.id),
     });
 
+    wallet.increaseAmountInCents = bankAccount.currentBalance.getInCents();
+    await this.walletRepository.save(wallet);
     await this.bankAccountRepository.save(bankAccount);
 
     return BankAccountMapper.toModel(bankAccount);
