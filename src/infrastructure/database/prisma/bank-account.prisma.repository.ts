@@ -16,7 +16,7 @@ export class BankAccountRepository implements IBankAccountRepository {
     await this.prisma.bankAccount.create({
       data: {
         accountName: bankAccount.accountName,
-        bankName: bankAccount.name,
+        bankName: bankAccount.bankName,
         currentBalance: bankAccount.currentBalance.getInCents(),
         initialBalance: bankAccount.initialBalance.getInCents(),
         id: bankAccount.id,
@@ -32,6 +32,20 @@ export class BankAccountRepository implements IBankAccountRepository {
     });
 
     return bankAccounts.map((item) => this.serializeBankAccount(item));
+  }
+
+  async findById(bankAccountId: string): Promise<BankAccountEntity | null> {
+    const bankAccount = await this.prisma.bankAccount.findUnique({
+      where: {
+        id: bankAccountId,
+      },
+    });
+
+    if (!bankAccount) {
+      return null;
+    }
+
+    return this.serializeBankAccount(bankAccount);
   }
 
   private serializeBankAccount(data: BankAccount): BankAccountEntity {

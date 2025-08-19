@@ -54,7 +54,7 @@ describe("Application - Register bank account - Use cases", () => {
     expect(inMemoryBankAccounts).to.have.lengthOf(1);
     expect(inMemoryBankAccounts[0]?.accountName).to.be.equal(result.accountName);
     expect(inMemoryBankAccounts[0]?.id).to.be.equal(result.id);
-    expect(inMemoryBankAccounts[0]?.name).to.be.equal(result.bankName);
+    expect(inMemoryBankAccounts[0]?.bankName).to.be.equal(result.bankName);
     expect(inMemoryBankAccounts[0]?.initialBalance.toBRL()).to.be.equal(result.initialBalance);
     expect(inMemoryBankAccounts[0]?.currentBalance.toBRL()).to.be.equal(result.currentBalance);
   });
