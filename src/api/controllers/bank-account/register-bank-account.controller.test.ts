@@ -68,7 +68,7 @@ describe("Controller - Register bank account - POST", () => {
     const response = await requestMaker.execute<BankAccountModel>({
       method: "post",
       body: registerBankAccountData,
-      path: "/bank-account",
+      path: "/accounts",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -87,7 +87,7 @@ describe("Controller - Register bank account - POST", () => {
     const response = await requestMaker.execute<BankAccountModel>({
       method: "post",
       body: { ...registerBankAccountData, amount: "100,890" },
-      path: `/bank-account`,
+      path: `/accounts`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -104,7 +104,7 @@ describe("Controller - Register bank account - POST", () => {
     const response = await requestMaker.execute<BankAccountModel>({
       method: "post",
       body: registerBankAccountData,
-      path: "/bank-account",
+      path: "/accounts",
       headers: {
         Authorization: `Bearer invalid-token`,
       },
