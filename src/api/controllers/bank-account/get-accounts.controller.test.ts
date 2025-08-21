@@ -32,6 +32,9 @@ describe("Controller - Get user accounts - GET", () => {
       createBankAccount({ walletId: new UniqueEntityId(walletData.id) }),
     ];
 
+    walletData.increaseAmountInCents = bankAccountsData[0]!.initialBalance.getInCents();
+    walletData.increaseAmountInCents = bankAccountsData[1]!.initialBalance.getInCents();
+    
     await prismaRepository.user.create({
       data: {
         id: userData.id.toString(),
@@ -84,9 +87,8 @@ describe("Controller - Get user accounts - GET", () => {
     });
 
     const bankTotalAmount = bankAccountsData.reduce((acc, account) => acc + account.currentBalance.getInCents(), 0);
-    const walletTotalAmount = walletData.currentBalance.getInCents();
-    const totalAmountData = Money.fromCents(bankTotalAmount + walletTotalAmount);
-    expect(totalAmountData.toBRL()).to.be.equal(response.body.data.totalAmount);
+    const totalAmountData = Money.fromCents(bankTotalAmount + walletData.initialBalance.getInCents());
+    expect(totalAmountData.toBRL()).to.be.equal(response.body.data.wallet.currentBalance);
     expect(response.body.data.wallet.id).to.be.equal(walletData.id);
     expect(response.body.data.wallet.currentBalance).to.be.equal(walletData.currentBalance.toBRL());
     expect(response.body.data.wallet.userId).to.be.equal(walletData.userId);

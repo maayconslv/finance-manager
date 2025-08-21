@@ -43,6 +43,11 @@ describe("Application - Get accounts - Use case", () => {
       createBankAccount({ walletId: new UniqueEntityId(walletData.id) }),
     ];
 
+    walletData.increaseAmountInCents = bankAccountsData[0]!.initialBalance.getInCents();
+    walletData.increaseAmountInCents = bankAccountsData[1]!.initialBalance.getInCents();
+    walletData.increaseAmountInCents = bankAccountsData[2]!.initialBalance.getInCents();
+    walletData.increaseAmountInCents = bankAccountsData[3]!.initialBalance.getInCents();
+
     inMemoryBankAccounts.push(...bankAccountsData);
     inMemoryWallets.push(walletData);
     inMemoryUsers.push(user);
@@ -55,12 +60,11 @@ describe("Application - Get accounts - Use case", () => {
   });
 
   it("should be able to get all user accounts correctly", async () => {
-    const { bankAccounts, totalAmount, wallet } = await sut.execute({ userId: user.id });
+    const { bankAccounts, wallet } = await sut.execute({ userId: user.id });
 
     const bankTotalAmount = bankAccountsData.reduce((acc, account) => acc + account.currentBalance.getInCents(), 0);
-    const walletTotalAmount = walletData.currentBalance.getInCents();
-    const totalAmountData = Money.fromCents(bankTotalAmount + walletTotalAmount);
-    expect(totalAmountData.toBRL()).to.be.equal(totalAmount);
+    const totalAmountData = Money.fromCents(bankTotalAmount + walletData.initialBalance.getInCents());
+    expect(totalAmountData.toBRL()).to.be.equal(walletData.currentBalance.toBRL());
     expect(bankAccounts).to.have.lengthOf(inMemoryBankAccounts.length);
     bankAccounts.forEach((item, index) => {
       expect(item.id).to.be.equal(bankAccountsData[index]!.id);

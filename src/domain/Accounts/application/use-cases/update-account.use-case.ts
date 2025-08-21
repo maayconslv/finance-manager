@@ -3,6 +3,7 @@ import { BankAccountModel } from "../model";
 import { BankAccountRepository, UserRepository } from "@/infrastructure/database/prisma";
 import { BankAccountMapper } from "../mapper";
 import { InternalServerError } from "@/domain/errors/internal-server.error";
+import { UnauthorizedError } from "@/domain/errors";
 
 export interface UpdateAccountUseCaseRequest {
   userId: string;
@@ -24,6 +25,10 @@ export class UpdateAccountUseCase {
 
     if (!user || !bankAccount) {
       throw new InternalServerError("The user or the bank account were not found. Please contact support.");
+    }
+
+    if (bankAccount.isDisable) {
+      throw new UnauthorizedError("This bank account was disabled.");
     }
 
     bankAccount.bankName = input.bankName?.trim() || bankAccount.bankName;

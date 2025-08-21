@@ -3,7 +3,6 @@ import { Service } from "typedi";
 import { UserAccountsModel } from "../model";
 import { BankAccountMapper, WalletMapper } from "../mapper";
 import { BankAccountRepository, UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
-import { Money } from "@/core/object-values";
 
 interface GetAllBankAccountsUseCaseRequest {
   userId: string;
@@ -30,14 +29,9 @@ export class GetAccountsUseCase {
 
     const bankAccounts = await this.bankRepository.findManyByWalletId(wallet.id);
 
-    const bankAccountsTotalAmount = bankAccounts.reduce((acc, account) => acc + account.currentBalance.getInCents(), 0);
-    const walletTotalAmount = wallet.currentBalance.getInCents();
-    const totalAmount = Money.fromCents(bankAccountsTotalAmount + walletTotalAmount);
-
     return {
       bankAccounts: bankAccounts.map(BankAccountMapper.toModel),
       wallet: WalletMapper.toModel(wallet),
-      totalAmount: totalAmount.toBRL(),
     };
   }
 }

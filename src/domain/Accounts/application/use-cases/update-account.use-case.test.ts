@@ -12,6 +12,7 @@ import { createBankAccount, createUser, createWallet } from "@/test/seed.test";
 import { UniqueEntityId } from "@/core/object-values";
 import { expect } from "chai";
 import { InternalServerError } from "@/domain/errors/internal-server.error";
+import { UnauthorizedError } from "@/domain/errors";
 
 describe("Application - Update bank account - Use cases", () => {
   let testContainer: ContainerInstance;
@@ -69,6 +70,7 @@ describe("Application - Update bank account - Use cases", () => {
       bankName: bankAccountAfterUpdate!.bankName,
       initialBalance: bankAccountAfterUpdate!.initialBalance.toBRL(),
       currentBalance: bankAccountAfterUpdate!.currentBalance.toBRL(),
+      isDisabled: bankAccountAfterUpdate!.isDisable
     });
     expect(bankAccountAfterUpdate!.accountName).to.be.equal("New account name");
     expect(bankAccountAfterUpdate!.bankName).to.be.equal("New bank name");
@@ -90,6 +92,7 @@ describe("Application - Update bank account - Use cases", () => {
       bankName: bankAccountAfterUpdate!.bankName,
       initialBalance: bankAccountAfterUpdate!.initialBalance.toBRL(),
       currentBalance: bankAccountAfterUpdate!.currentBalance.toBRL(),
+      isDisabled: bankAccountAfterUpdate!.isDisable
     });
     expect(bankAccountAfterUpdate!.accountName).to.be.equal(bankAccountBeforeUpdate.accountName);
     expect(bankAccountAfterUpdate!.bankName).to.be.equal("New bank name");
@@ -111,6 +114,7 @@ describe("Application - Update bank account - Use cases", () => {
       bankName: bankAccountAfterUpdate!.bankName,
       initialBalance: bankAccountAfterUpdate!.initialBalance.toBRL(),
       currentBalance: bankAccountAfterUpdate!.currentBalance.toBRL(),
+      isDisabled: bankAccountAfterUpdate!.isDisable
     });
     expect(bankAccountAfterUpdate!.bankName).to.be.equal(bankAccountBeforeUpdate.bankName);
     expect(bankAccountAfterUpdate!.accountName).to.be.equal("New account name");
@@ -145,6 +149,25 @@ describe("Application - Update bank account - Use cases", () => {
       expect(error.message).to.be.equal("The user or the bank account were not found. Please contact support.");
       expect(error.statusCode).to.be.equal(500);
       expect(error.errorType).to.be.equal("INTERNAL_SERVER");
+    }
+  });
+
+  it("should return an error if the bank account was disabled", async () => {
+    const disabledBankAccount = createBankAccount({ deletedAt: new Date(), walletId: new UniqueEntityId(wallet.id) });
+    inMemoryBankAccounts.push(disabledBankAccount)
+
+    try {
+      await sut.execute({
+        userId: user.id,
+        bankAccountId: disabledBankAccount.id,
+        accountName: "New account name",
+        bankName: "New bank name",
+      });
+    } catch (error: any) {
+      expect(error).to.be.instanceOf(UnauthorizedError);
+      expect(error.message).to.be.equal("This bank account was disabled.");
+      expect(error.statusCode).to.be.equal(401);
+      expect(error.errorType).to.be.equal("UNAUTHORIZED");
     }
   });
 });

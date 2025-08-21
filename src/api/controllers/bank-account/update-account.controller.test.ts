@@ -95,6 +95,7 @@ describe("Controller - Update bank account - POST", () => {
       bankName: bankAccountAfterUpdate.bankName,
       initialBalance: Money.fromCents(bankAccountAfterUpdate.initialBalance).toBRL(),
       currentBalance: Money.fromCents(bankAccountAfterUpdate.currentBalance).toBRL(),
+      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt)
     });
     expect(bankAccountAfterUpdate.accountName).to.be.equal(updateBankAccountRequest.accountName);
     expect(bankAccountAfterUpdate.bankName).to.be.equal(updateBankAccountRequest.bankName);
@@ -103,7 +104,7 @@ describe("Controller - Update bank account - POST", () => {
   it("should be ble to update a bank account sending only account name", async () => {
     const response = await requestMaker.execute<BankAccountModel>({
       method: "put",
-      body: { accountName: 'new account name' },
+      body: { accountName: "new account name" },
       path: `/accounts/${bankAccountData.id}`,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -117,14 +118,15 @@ describe("Controller - Update bank account - POST", () => {
       bankName: bankAccountAfterUpdate.bankName,
       initialBalance: Money.fromCents(bankAccountAfterUpdate.initialBalance).toBRL(),
       currentBalance: Money.fromCents(bankAccountAfterUpdate.currentBalance).toBRL(),
+      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt)
     });
-    expect(bankAccountAfterUpdate.accountName).to.be.equal('new account name');
+    expect(bankAccountAfterUpdate.accountName).to.be.equal("new account name");
   });
 
   it("should be ble to update a bank account sending only bank name", async () => {
     const response = await requestMaker.execute<BankAccountModel>({
       method: "put",
-      body: { bankName: 'new bank name' },
+      body: { bankName: "new bank name" },
       path: `/accounts/${bankAccountData.id}`,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -138,14 +140,15 @@ describe("Controller - Update bank account - POST", () => {
       bankName: bankAccountAfterUpdate.bankName,
       initialBalance: Money.fromCents(bankAccountAfterUpdate.initialBalance).toBRL(),
       currentBalance: Money.fromCents(bankAccountAfterUpdate.currentBalance).toBRL(),
+      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt)
     });
-    expect(bankAccountAfterUpdate.bankName).to.be.equal('new bank name');
+    expect(bankAccountAfterUpdate.bankName).to.be.equal("new bank name");
   });
 
   it("should return unauthorized error if the user is using a invalid id", async () => {
     const response = await requestMaker.execute<BankAccountModel>({
       method: "put",
-      body: { accountName: 'new account name' },
+      body: { accountName: "new account name" },
       path: `/accounts/${bankAccountData.id}`,
       headers: {
         Authorization: `Bearer invalid-id`,
