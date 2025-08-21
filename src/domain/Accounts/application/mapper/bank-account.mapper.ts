@@ -13,6 +13,7 @@ export class BankAccountMapper {
       bankName: entity.bankName,
       currentBalance: entity.currentBalance.toBRL(),
       initialBalance: entity.currentBalance.toBRL(),
+      isDisabled: entity.isDisable
     };
   }
 }

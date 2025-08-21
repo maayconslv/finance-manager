@@ -1,10 +1,11 @@
-import { BankAccountModel } from "@/domain/Accounts/application/model";
+import { BankAccountModel, DeleteAccountModel } from "@/domain/Accounts/application/model";
 import {
+  DeleteAccountUseCase,
   GetAccountsUseCase,
   RegisterBankAccountUseCase,
   UpdateAccountUseCase,
 } from "@/domain/Accounts/application/use-cases";
-import { Body, Controller, Get, HttpCode, Param, Post, Put, Req, UseBefore } from "routing-controllers";
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Req, UseBefore } from "routing-controllers";
 import { Service } from "typedi";
 import { RegisterBankAccountRequest, UpdateBankAccountRequest } from "./bank-account.dto";
 import { AuthMiddleware } from "@/api/middleware";
@@ -17,6 +18,7 @@ export class BankAccountController {
     private readonly registerBankAccountUseCase: RegisterBankAccountUseCase,
     private readonly getAllAccountsUseCase: GetAccountsUseCase,
     private readonly updateAccountUseCase: UpdateAccountUseCase,
+    private readonly deleteAccountUseCase: DeleteAccountUseCase,
   ) {}
 
   @Post()
@@ -43,5 +45,14 @@ export class BankAccountController {
     @Body() data: UpdateBankAccountRequest,
   ): Promise<BankAccountModel> {
     return await this.updateAccountUseCase.execute({ ...data, userId: user.userId, bankAccountId });
+  }
+
+  @Delete("/:bankAccountId")
+  @UseBefore(AuthMiddleware)
+  async DeleteAccountUseCase(
+    @Param("bankAccountId") bankAccountId: string,
+    @Req() { user }: AuthorizedRequest,
+  ): Promise<DeleteAccountModel> {
+    return await this.deleteAccountUseCase.execute({ bankAccountId, userId: user.userId });
   }
 }

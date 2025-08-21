@@ -33,6 +33,7 @@ interface CreateBankAccountData {
   bankName: string;
   currentBalance: Money;
   initialBalance: Money;
+  deletedAt?: Date;
   walletId: UniqueEntityId;
 }
 

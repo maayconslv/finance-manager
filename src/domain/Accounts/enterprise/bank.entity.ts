@@ -10,6 +10,7 @@ interface BankAccountProps {
   createdAt: Date;
   updatedAt?: Date;
   walletId: UniqueEntityId;
+  deletedAt?: Date;
 }
 
 export class BankAccountEntity extends BaseEntity<BankAccountProps> {
@@ -39,10 +40,25 @@ export class BankAccountEntity extends BaseEntity<BankAccountProps> {
 
   set bankName(bankName: string) {
     this.props.bankName = bankName;
+    this.props.updatedAt = new Date();
   }
 
   set accountName(accountName: string) {
     this.props.accountName = accountName;
+    this.props.updatedAt = new Date();
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
+  disable() {
+    this.props.deletedAt = new Date();
+    this.props.updatedAt = new Date();
+  }
+
+  get isDisable() {
+    return this.props.deletedAt ? true : false;
   }
 
   static create(props: Optional<BankAccountProps, "createdAt">, id?: UniqueEntityId): BankAccountEntity {

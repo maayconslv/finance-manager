@@ -4,6 +4,7 @@ export interface BankAccountModel {
   bankName: string;
   initialBalance: string;
   currentBalance: string;
+  isDisabled: boolean;
 }
 
 export interface WalletModel {
@@ -15,5 +16,8 @@ export interface WalletModel {
 export interface UserAccountsModel {
   bankAccounts: BankAccountModel[];
   wallet: WalletModel;
-  totalAmount: string;
+}
+
+export interface DeleteAccountModel {
+  message: string;
 }
