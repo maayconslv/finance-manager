@@ -6,5 +6,3 @@ tsConfigPaths.register({
   baseUrl,
   paths: tsConfig.compilerOptions.paths,
 });
-
-require("./dist/index.js");

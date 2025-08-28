@@ -4,8 +4,7 @@
     "target": "ES2020",
     "module": "commonjs",
     "lib": ["ES2020"],
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "dist",
     "strict": true,
     "strictPropertyInitialization": false,
     "esModuleInterop": true,
@@ -36,11 +35,6 @@
       "@/api/*": ["api/*"]
     }
   },
-  "include": [
-    "src/**/*"
-, "src/domain/services/emails"  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*", "src/domain/services/emails"],
+  "exclude": ["node_modules", "dist", "coverage", "*.test.ts", "tsconfig-paths-dist.js"]
 } 
