@@ -8,10 +8,12 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+COPY deploy.sh .
 
 RUN npx prisma generate
 RUN npm run build
+RUN chmod +x deploy.sh
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["./deploy.sh"]
