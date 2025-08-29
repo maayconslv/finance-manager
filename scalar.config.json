@@ -1,0 +1,6 @@
+{
+  "projectName": "Finance Manager API",
+  "openApiSpecUrl": "http://localhost:3000/openapi.json",
+  "theme": "light",
+  "logoUrl": ""
+}
