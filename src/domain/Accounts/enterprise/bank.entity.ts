@@ -61,6 +61,14 @@ export class BankAccountEntity extends BaseEntity<BankAccountProps> {
     return this.props.deletedAt ? true : false;
   }
 
+  set increaseAmountInCents(value: number) {
+    this.currentBalance.increaseAmount(value);
+  }
+
+  set decreaseAmountInCents(value: number) {
+    this.currentBalance.decreaseAmount(value);
+  }
+
   static create(props: Optional<BankAccountProps, "createdAt">, id?: UniqueEntityId): BankAccountEntity {
     return new BankAccountEntity({ ...props, createdAt: new Date() }, id);
   }

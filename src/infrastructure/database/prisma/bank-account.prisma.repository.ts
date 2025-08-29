@@ -73,7 +73,7 @@ export class BankAccountRepository implements IBankAccountRepository {
   async belongsToUser(bankAccountId: string, userId: string): Promise<boolean> {
     const bankAccount = await this.prisma.bankAccount.findUnique({
       where: { id: bankAccountId },
-      include: { wallet: true }
+      include: { wallet: true },
     });
 
     return bankAccount?.wallet.userId === userId;

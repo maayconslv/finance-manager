@@ -191,7 +191,7 @@ The API implements comprehensive error handling with different error types:
 - Ensure all tests pass before submitting PR
 
 ## 📝 License
-
+  
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---

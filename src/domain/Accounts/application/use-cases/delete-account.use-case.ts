@@ -25,8 +25,8 @@ export class DeleteAccountUseCase {
     }
 
     const accountBelongsUser = await this.bankAccountRepository.belongsToUser(bankAccount.id, user.id);
-    if(!accountBelongsUser) {
-      throw new UnauthorizedError("You don't have permission to disable this account.")
+    if (!accountBelongsUser) {
+      throw new UnauthorizedError("You don't have permission to disable this account.");
     }
 
     bankAccount.disable();

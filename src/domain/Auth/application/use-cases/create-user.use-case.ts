@@ -1,9 +1,9 @@
-import { Service } from "typedi";
 import { BadRequestError, ConflictError } from "@/domain/errors";
-import { UserModel } from "../model";
 import { CryptoService } from "@/domain/services/crypto.service";
 import { UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
+import { Service } from "typedi";
 import { UserEntity, WalletEntity } from "../../enterprise/entities";
+import { UserModel } from "../model";
 
 interface CreateUserUseCaseProps {
   name: string;

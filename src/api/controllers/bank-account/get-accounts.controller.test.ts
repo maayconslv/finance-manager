@@ -34,7 +34,7 @@ describe("Controller - Get user accounts - GET", () => {
 
     walletData.increaseAmountInCents = bankAccountsData[0]!.initialBalance.getInCents();
     walletData.increaseAmountInCents = bankAccountsData[1]!.initialBalance.getInCents();
-    
+
     await prismaRepository.user.create({
       data: {
         id: userData.id.toString(),
