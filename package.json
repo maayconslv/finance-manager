@@ -10,6 +10,7 @@
     "test": "dotenv -e .env.test mocha -r ts-node/register ./src/**/*.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:test": "dotenv -e .env.test -- prisma migrate dev",
     "prisma:studio": "prisma studio",
     "lint": "eslint 'src/**/*.ts'",
