@@ -39,6 +39,10 @@ class App {
 
     // COnfigure Swagger
     this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    this.app.get("/openapi.json", (_req, res) => {
+      res.setHeader("Content-Type", "applciation/json");
+      res.send(swaggerSpec);
+    });
 
     this.logger.info("Middlewares successfully configured.");
   }
