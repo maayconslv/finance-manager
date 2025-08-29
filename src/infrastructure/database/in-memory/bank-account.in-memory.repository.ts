@@ -3,7 +3,10 @@ import { BankAccountEntity } from "@/domain/Accounts/enterprise";
 import { WalletEntity } from "@/domain/Auth/enterprise/entities";
 
 export class BankAccountInMemoryRepository implements IBankAccountRepository {
-  constructor(private bankAccounts: BankAccountEntity[], private wallets?: WalletEntity[]) {}
+  constructor(
+    private bankAccounts: BankAccountEntity[],
+    private wallets?: WalletEntity[],
+  ) {}
 
   async save(bankAccount: BankAccountEntity): Promise<void> {
     const index = this.bankAccounts.findIndex((item) => item.id === bankAccount.id);
@@ -33,10 +36,10 @@ export class BankAccountInMemoryRepository implements IBankAccountRepository {
     const bankAccount = this.bankAccounts.find((a) => a.id === bankAccountId);
     if (!bankAccount) {
       return false;
-    };
+    }
 
     const wallet = this.wallets?.find((item) => item.id === bankAccount.walletId);
-    if(!wallet || wallet.userId !== userId) {
+    if (!wallet || wallet.userId !== userId) {
       return false;
     }
 

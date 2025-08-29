@@ -59,6 +59,7 @@ model Wallet {
   userId String @unique
 
   BankAccount BankAccount[]
+  Transaction Transaction[]
 
   @@map("wallets")
 }
@@ -106,9 +107,11 @@ model Transaction {
   deletedAt   DateTime?
 
   bankAccount BankAccount @relation(fields: [bankAccountId], references: [id])
+  wallet      Wallet      @relation(fields: [walletId], references: [id])
   category    Categories  @relation(fields: [categoryId], references: [id])
 
   bankAccountId String
+  walletId      String
   categoryId    String
 
   @@map("transactions")

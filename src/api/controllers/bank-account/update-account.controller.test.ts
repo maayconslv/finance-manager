@@ -95,7 +95,7 @@ describe("Controller - Update bank account - POST", () => {
       bankName: bankAccountAfterUpdate.bankName,
       initialBalance: Money.fromCents(bankAccountAfterUpdate.initialBalance).toBRL(),
       currentBalance: Money.fromCents(bankAccountAfterUpdate.currentBalance).toBRL(),
-      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt)
+      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt),
     });
     expect(bankAccountAfterUpdate.accountName).to.be.equal(updateBankAccountRequest.accountName);
     expect(bankAccountAfterUpdate.bankName).to.be.equal(updateBankAccountRequest.bankName);
@@ -118,7 +118,7 @@ describe("Controller - Update bank account - POST", () => {
       bankName: bankAccountAfterUpdate.bankName,
       initialBalance: Money.fromCents(bankAccountAfterUpdate.initialBalance).toBRL(),
       currentBalance: Money.fromCents(bankAccountAfterUpdate.currentBalance).toBRL(),
-      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt)
+      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt),
     });
     expect(bankAccountAfterUpdate.accountName).to.be.equal("new account name");
   });
@@ -140,7 +140,7 @@ describe("Controller - Update bank account - POST", () => {
       bankName: bankAccountAfterUpdate.bankName,
       initialBalance: Money.fromCents(bankAccountAfterUpdate.initialBalance).toBRL(),
       currentBalance: Money.fromCents(bankAccountAfterUpdate.currentBalance).toBRL(),
-      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt)
+      isDisabled: Boolean(bankAccountAfterUpdate.deletedAt),
     });
     expect(bankAccountAfterUpdate.bankName).to.be.equal("new bank name");
   });

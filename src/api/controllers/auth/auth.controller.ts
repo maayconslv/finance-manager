@@ -1,6 +1,3 @@
-import { Controller, Post, Body, HttpCode, Put, QueryParam } from "routing-controllers";
-import { Service } from "typedi";
-import { AuthenticateUserRequest, CreateUserRequest, ForgotPasswordRequest, UpdatePasswordRequest } from "./auth.dto";
 import { AuthenticatedUserModel, UserModel } from "@/domain/Auth/application/model";
 import {
   AuthenticateUseCase,
@@ -8,6 +5,10 @@ import {
   ForgotPasswordUseCase,
   UpdatePasswordUseCase,
 } from "@/domain/Auth/application/use-cases";
+import { Body, Controller, HttpCode, Post, Put, QueryParam } from "routing-controllers";
+import { OpenAPI } from "routing-controllers-openapi";
+import { Service } from "typedi";
+import { AuthenticateUserRequest, CreateUserRequest, ForgotPasswordRequest, UpdatePasswordRequest } from "./auth.dto";
 
 @Controller("/auth")
 @Service()
@@ -20,6 +21,7 @@ export class AuthController {
   ) {}
 
   @Post("/register")
+  @OpenAPI({ summary: "Register a user" })
   @HttpCode(201)
   async createUser(@Body() data: CreateUserRequest): Promise<UserModel> {
     return await this.createUserUseCase.execute(data);

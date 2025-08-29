@@ -44,6 +44,14 @@ export class Money {
     this.value += value;
   }
 
+  public decreaseAmount(value: number): void {
+    if (value > this.value) {
+      throw new BadRequestError("you cannot decrease a value greater than the current one");
+    }
+
+    this.value -= value;
+  }
+
   private parseMoneyStringToCents(value: string): number {
     const moneyRegex = /^(\d{1,3}(\.\d{3})*|\d+),\d{2}$/;
 
