@@ -1,12 +1,14 @@
-import "reflect-metadata";
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
-import { useExpressServer, useContainer } from "routing-controllers";
-import { Container } from "typedi";
-import { Logger } from "@/infrastructure/logger/logger";
 import { ErrorHandler } from "@/api/middleware/error-handler.middleware";
+import swaggerSpec from "@/core/docs/swagger";
+import { Logger } from "@/infrastructure/logger/logger";
+import cors from "cors";
+import express from "express";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import "reflect-metadata";
+import { useContainer, useExpressServer } from "routing-controllers";
+import * as swaggerUi from "swagger-ui-express";
+import { Container } from "typedi";
 
 class App {
   private app: express.Application;
@@ -34,6 +36,9 @@ class App {
     // Configure JSON parser
     this.app.use(express.json({ limit: "10mb" }));
     this.app.use(express.urlencoded({ extended: true }));
+
+    // COnfigure Swagger
+    this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     this.logger.info("Middlewares successfully configured.");
   }
