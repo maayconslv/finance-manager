@@ -9,6 +9,7 @@ export class TransactionMapper {
       amount: entity.amount.toBRL(),
       description: entity.description,
       type: entity.type,
+      createdAt: entity.createdAt,
       category: {
         id: entity.category.id,
         colorCode: entity.category.colorCode,
@@ -26,6 +27,7 @@ export class AccountTransactionsMapper {
         amount: item.amount.toBRL(),
         type: item.type,
         description: item.description,
+        createdAt: item.createdAt,
         category: {
           id: item.category.id,
           colorCode: item.category.colorCode,

@@ -11,6 +11,7 @@ export interface TransactionModel {
   type: Type;
   description: string;
   category: CategoryModel;
+  createdAt: Date;
 }
 
 export interface CategoryModel {
