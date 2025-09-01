@@ -39,10 +39,6 @@ class App {
 
     // COnfigure Swagger
     this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-    this.app.get("/openapi.json", (_req, res) => {
-      res.setHeader("Content-Type", "applciation/json");
-      res.send(swaggerSpec);
-    });
 
     this.logger.info("Middlewares successfully configured.");
   }
@@ -75,8 +71,9 @@ class App {
     const port = process.env["PORT"] || 3000;
 
     this.app.listen(port, () => {
-      this.logger.info(`Server started on port ${port}`);
+      this.logger.info(`Server started  http://localhost:${port}`);
       this.logger.info(`Environment: ${process.env["NODE_ENV"] || "development"}`);
+      this.logger.info(`Access http://localhost:${port}/docs to view documentation`);
     });
   }
 }
