@@ -6,7 +6,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { Money, UniqueEntityId } from "@/core/object-values";
 
 type TransactionWithCategory = Prisma.TransactionGetPayload<{
-  include: { category: true };
+  include: { bankAccount: { include: { wallet: true } }; category: true };
 }>;
 
 @Service()
@@ -43,7 +43,7 @@ export class TransactionRepository implements ITransactionRepository {
   async findManyByAccount(bankAccountId: string): Promise<TransactionEntity[]> {
     const transactions = await this.prisma.transaction.findMany({
       where: { bankAccountId },
-      include: { category: true },
+      include: { bankAccount: { include: { wallet: true } }, category: true },
     });
 
     return transactions.map(this.serializeTransaction);
@@ -52,7 +52,20 @@ export class TransactionRepository implements ITransactionRepository {
   async findById(transactionId: string): Promise<TransactionEntity | null> {
     const transaction = await this.prisma.transaction.findUnique({
       where: { id: transactionId },
-      include: { category: true },
+      include: { bankAccount: { include: { wallet: true } }, category: true },
+    });
+
+    if (!transaction) {
+      return null;
+    }
+
+    return this.serializeTransaction(transaction);
+  }
+
+  async findByIdAndUserId(transactionId: string, userId: string): Promise<TransactionEntity | null> {
+    const transaction = await this.prisma.transaction.findUnique({
+      where: { id: transactionId, bankAccount: { wallet: { userId } } },
+      include: { bankAccount: { include: { wallet: true } }, category: true },
     });
 
     if (!transaction) {
@@ -65,10 +78,18 @@ export class TransactionRepository implements ITransactionRepository {
   async belongsToUser(transactionId: string, userId: string): Promise<boolean> {
     const transaction = await this.prisma.transaction.findUnique({
       where: { id: transactionId },
-      include: { bankAccount: { include: { wallet: true } } },
+      include: { bankAccount: { include: { wallet: true } }, category: true },
     });
 
     return transaction?.bankAccount.wallet.userId === userId;
+  }
+
+  async delete(transactionId: string): Promise<void> {
+    await this.prisma.transaction.delete({
+      where: {
+        id: transactionId,
+      },
+    });
   }
 
   private serializeTransaction(data: TransactionWithCategory): TransactionEntity {

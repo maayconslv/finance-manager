@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { ErrorHandler } from "@/api/middleware/error-handler.middleware";
 import swaggerSpec from "@/core/docs/swagger";
 import { Logger } from "@/infrastructure/logger/logger";
@@ -5,7 +6,6 @@ import cors from "cors";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import "reflect-metadata";
 import { useContainer, useExpressServer } from "routing-controllers";
 import * as swaggerUi from "swagger-ui-express";
 import { Container } from "typedi";

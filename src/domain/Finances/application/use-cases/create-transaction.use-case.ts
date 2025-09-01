@@ -53,8 +53,6 @@ export class CreateTransactionUseCase {
       bankAccount.currentBalance.decreaseAmount(transaction.amount.getInCents());
     }
 
-    console.log(bankAccount.currentBalance);
-
     await this.bankAccountRepository.save(bankAccount);
     await this.transactionRepository.save(transaction);
 

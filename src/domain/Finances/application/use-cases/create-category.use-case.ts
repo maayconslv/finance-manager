@@ -21,8 +21,6 @@ export class CreateCategoryUseCase {
   ) {}
 
   async execute(data: CreateCategoryUseCaseRequest): Promise<CategoryModel> {
-    console.log("entrou no use-case");
-    console.log("data: ", data);
     const user = await this.userRepository.findById(data.userId);
     if (!user) {
       throw new InternalServerError();

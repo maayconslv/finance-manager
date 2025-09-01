@@ -10,6 +10,7 @@ import { Service } from "typedi";
 import { RegisterBankAccountRequest, UpdateBankAccountRequest } from "./bank-account.dto";
 import { AuthMiddleware } from "@/api/middleware";
 import { AuthorizedRequest } from "@/api/types";
+import { OpenAPI } from "routing-controllers-openapi";
 
 @Controller("/accounts")
 @Service()
@@ -24,6 +25,10 @@ export class BankAccountController {
   @Post()
   @HttpCode(201)
   @UseBefore(AuthMiddleware)
+  @OpenAPI({
+    summary: "Record a bank account",
+    security: [{ bearerAuth: [] }],
+  })
   async register(
     @Body() data: RegisterBankAccountRequest,
     @Req() request: AuthorizedRequest,
@@ -33,12 +38,20 @@ export class BankAccountController {
 
   @Get()
   @UseBefore(AuthMiddleware)
+  @OpenAPI({
+    summary: "List all bank accounts",
+    security: [{ bearerAuth: [] }],
+  })
   async getAllAccounts(@Req() request: AuthorizedRequest) {
     return await this.getAllAccountsUseCase.execute({ userId: request.user.userId });
   }
 
   @Put("/:bankAccountId")
   @UseBefore(AuthMiddleware)
+  @OpenAPI({
+    summary: "Update a bank account name",
+    security: [{ bearerAuth: [] }],
+  })
   async updateAccount(
     @Param("bankAccountId") bankAccountId: string,
     @Req() { user }: AuthorizedRequest,
@@ -49,6 +62,10 @@ export class BankAccountController {
 
   @Delete("/:bankAccountId")
   @UseBefore(AuthMiddleware)
+  @OpenAPI({
+    summary: "Disable a bank account",
+    security: [{ bearerAuth: [] }],
+  })
   async DeleteAccountUseCase(
     @Param("bankAccountId") bankAccountId: string,
     @Req() { user }: AuthorizedRequest,
