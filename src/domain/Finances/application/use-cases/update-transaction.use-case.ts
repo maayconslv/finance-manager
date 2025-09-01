@@ -67,7 +67,7 @@ export class UpdateTransactionUseCase {
   }
 
   private shouldUpdateBalance(data: UpdateTransactionUseCaseRequest) {
-    return !!(data.amount ?? data.type);
+    return !!(data.type || data.amount);
   }
 
   private async updateBankAccountBalance(
@@ -80,38 +80,22 @@ export class UpdateTransactionUseCase {
       throw new InternalServerError("Bank account not found");
     }
 
+    const oldType = transaction.type;
+    const oldAmount = transaction.amount;
     const newAmount = amount ? new Money(amount) : null;
-    if (newAmount && !newType) {
-      // caso esteja atualizando o valor da transaçao, preciso remover da conta bancaria o valor da transaçao atual e acrescentar um novo valor
-      if (transaction.type === Type.income) {
-        bankAccount.decreaseAmountInCents = transaction.amount.getInCents();
-        bankAccount.increaseAmountInCents = newAmount.getInCents();
-      } else {
-        bankAccount.increaseAmountInCents = transaction.amount.getInCents();
-        bankAccount.decreaseAmountInCents = newAmount.getInCents();
-      }
-    } else if (newType && !newAmount) {
-      // caso mude apenas o tipo, preciso reverter os valores da transaçao. Ou seja... se mudar o valor da transaçao para income, preciso acrescentar o valor da transaçao atual
-      if (newType === Type.income) {
-        bankAccount.decreaseAmountInCents = transaction.amount.getInCents();
-      } else {
-        bankAccount.increaseAmountInCents = transaction.amount.getInCents();
-      }
-    } else if (newAmount && newType) {
-      // caso mude o tipo de o valor, preciso reverter o valor da conta bancaria e adicionar um novo valor
-      if (newType === Type.income) {
-        bankAccount.decreaseAmountInCents = transaction.amount.getInCents();
-      } else {
-        bankAccount.increaseAmountInCents = transaction.amount.getInCents();
-      }
+    const finalType = newType ?? oldType;
+    const finalAmount = newAmount ?? oldAmount;
 
-      if (transaction.type === Type.income) {
-        bankAccount.decreaseAmountInCents = transaction.amount.getInCents();
-        bankAccount.increaseAmountInCents = newAmount.getInCents();
-      } else {
-        bankAccount.increaseAmountInCents = transaction.amount.getInCents();
-        bankAccount.decreaseAmountInCents = newAmount.getInCents();
-      }
+    if (oldType === Type.income) {
+      bankAccount.decreaseAmountInCents = oldAmount.getInCents();
+    } else {
+      bankAccount.increaseAmountInCents = oldAmount.getInCents();
+    }
+
+    if (finalType === Type.income) {
+      bankAccount.increaseAmountInCents = finalAmount.getInCents();
+    } else {
+      bankAccount.decreaseAmountInCents = finalAmount.getInCents();
     }
 
     await this.bankAccountRepository.save(bankAccount);
