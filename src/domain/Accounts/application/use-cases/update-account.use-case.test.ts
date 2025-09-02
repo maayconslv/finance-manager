@@ -70,7 +70,7 @@ describe("Application - Update bank account - Use cases", () => {
       bankName: bankAccountAfterUpdate!.bankName,
       initialBalance: bankAccountAfterUpdate!.initialBalance.toBRL(),
       currentBalance: bankAccountAfterUpdate!.currentBalance.toBRL(),
-      isDisabled: bankAccountAfterUpdate!.isDisable,
+      isDisable: bankAccountAfterUpdate!.isDisable,
     });
     expect(bankAccountAfterUpdate!.accountName).to.be.equal("New account name");
     expect(bankAccountAfterUpdate!.bankName).to.be.equal("New bank name");
@@ -92,7 +92,7 @@ describe("Application - Update bank account - Use cases", () => {
       bankName: bankAccountAfterUpdate!.bankName,
       initialBalance: bankAccountAfterUpdate!.initialBalance.toBRL(),
       currentBalance: bankAccountAfterUpdate!.currentBalance.toBRL(),
-      isDisabled: bankAccountAfterUpdate!.isDisable,
+      isDisable: bankAccountAfterUpdate!.isDisable,
     });
     expect(bankAccountAfterUpdate!.accountName).to.be.equal(bankAccountBeforeUpdate.accountName);
     expect(bankAccountAfterUpdate!.bankName).to.be.equal("New bank name");
@@ -114,7 +114,7 @@ describe("Application - Update bank account - Use cases", () => {
       bankName: bankAccountAfterUpdate!.bankName,
       initialBalance: bankAccountAfterUpdate!.initialBalance.toBRL(),
       currentBalance: bankAccountAfterUpdate!.currentBalance.toBRL(),
-      isDisabled: bankAccountAfterUpdate!.isDisable,
+      isDisable: bankAccountAfterUpdate!.isDisable,
     });
     expect(bankAccountAfterUpdate!.bankName).to.be.equal(bankAccountBeforeUpdate.bankName);
     expect(bankAccountAfterUpdate!.accountName).to.be.equal("New account name");

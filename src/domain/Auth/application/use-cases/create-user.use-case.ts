@@ -1,9 +1,6 @@
 import { BadRequestError, ConflictError } from "@/domain/errors";
 import { CryptoService } from "@/domain/services/crypto.service";
-import {
-  UserRepository,
-  WalletRepository,
-} from "@/infrastructure/database/prisma";
+import { UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
 import { Service } from "typedi";
 import { UserEntity, WalletEntity } from "../../enterprise/entities";
 import { UserModel } from "../model";
@@ -24,11 +21,7 @@ export class CreateUserUseCase {
     private readonly DEFAULT_BALANCE: string = "00,00",
   ) {}
 
-  async execute({
-    email,
-    name,
-    password,
-  }: CreateUserUseCaseProps): Promise<UserModel> {
+  async execute({ email, name, password }: CreateUserUseCaseProps): Promise<UserModel> {
     this.validateUserPassword(password);
 
     const userAlreadyExists = await this.userRepository.findByEmail(email);
@@ -37,17 +30,9 @@ export class CreateUserUseCase {
     }
 
     const salt = this.cryptoService.createSalt();
-    const passwordHash = await this.cryptoService.createHashWithSalt(
-      password,
-      salt,
-    );
+    const passwordHash = await this.cryptoService.createHashWithSalt(password, salt);
 
-    const user = UserEntity.createWithCredentials(
-      email,
-      name,
-      passwordHash,
-      salt,
-    );
+    const user = UserEntity.createWithCredentials(email, name, passwordHash, salt);
     const wallet = WalletEntity.create({
       currentBalance: new Money(this.DEFAULT_BALANCE),
       initialBalance: new Money(this.DEFAULT_BALANCE),
