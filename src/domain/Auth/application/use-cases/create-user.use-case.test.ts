@@ -8,7 +8,10 @@ import { CryptoService } from "@/domain/services/crypto.service";
 import { checkUser, checkWallet } from "@/test/checker.test";
 import { WalletInMemoryRepository } from "@/infrastructure/database/in-memory/wallet.in-memory.repository";
 import { UserInMemoryRepository } from "@/infrastructure/database/in-memory";
-import { UserRepository, WalletRepository } from "@/infrastructure/database/prisma";
+import {
+  UserRepository,
+  WalletRepository,
+} from "@/infrastructure/database/prisma";
 
 describe("Application - Create a new user - Use cases", () => {
   let testContainer: ContainerInstance;
@@ -20,14 +23,19 @@ describe("Application - Create a new user - Use cases", () => {
     email: faker.internet.email(),
     name: faker.person.fullName(),
     password: faker.internet.password(),
-    initialBalance: "10.000,00",
   };
 
   before(() => {
     testContainer = Container.of("test-container");
 
-    testContainer.set(UserRepository, new UserInMemoryRepository(inMemoryDatabase));
-    testContainer.set(WalletRepository, new WalletInMemoryRepository(inMemoryWallets));
+    testContainer.set(
+      UserRepository,
+      new UserInMemoryRepository(inMemoryDatabase),
+    );
+    testContainer.set(
+      WalletRepository,
+      new WalletInMemoryRepository(inMemoryWallets),
+    );
     testContainer.set(CryptoService, new CryptoService());
 
     createUserUseCase = testContainer.get(CreateUserUseCase);
@@ -69,7 +77,9 @@ describe("Application - Create a new user - Use cases", () => {
         await createUserUseCase.execute(invalidUserData);
       } catch (error: any) {
         expect(error).to.be.an.instanceOf(BadRequestError);
-        expect(error.message).to.equal("Password must be at least 6 characters long");
+        expect(error.message).to.equal(
+          "Password must be at least 6 characters long",
+        );
       }
     });
 
@@ -82,7 +92,9 @@ describe("Application - Create a new user - Use cases", () => {
         await createUserUseCase.execute(invalidUserData);
       } catch (error: any) {
         expect(error).to.be.an.instanceOf(BadRequestError);
-        expect(error.message).to.equal("Invalid money format. Use format like 12.398,90");
+        expect(error.message).to.equal(
+          "Invalid money format. Use format like 12.398,90",
+        );
       }
     });
 
@@ -96,7 +108,9 @@ describe("Application - Create a new user - Use cases", () => {
         await createUserUseCase.execute(invalidUserData);
       } catch (error: any) {
         expect(error).to.be.an.instanceOf(BadRequestError);
-        expect(error.message).to.equal("Invalid money format. Use format like 12.398,90");
+        expect(error.message).to.equal(
+          "Invalid money format. Use format like 12.398,90",
+        );
       }
     });
   });

@@ -38,20 +38,10 @@ export class WalletEntity extends BaseEntity<WalletProps> {
     this.currentBalance.decreaseAmount(value);
   }
 
-  static create(props: Optional<WalletProps, "createdAt">, id?: UniqueEntityId): WalletEntity {
-    const wallet = new WalletEntity({ ...props, createdAt: new Date() }, id);
-    return wallet;
-  }
-
-  static createWithInitialBalance(userId: string, initialBalance: string, id?: UniqueEntityId): WalletEntity {
-    return new WalletEntity(
-      {
-        userId: new UniqueEntityId(userId),
-        initialBalance: new Money(initialBalance),
-        currentBalance: new Money(initialBalance),
-        createdAt: new Date(),
-      },
-      id,
-    );
+  static create(
+    props: Optional<WalletProps, "createdAt">,
+    id?: UniqueEntityId,
+  ): WalletEntity {
+    return new WalletEntity({ ...props, createdAt: new Date() }, id);
   }
 }
