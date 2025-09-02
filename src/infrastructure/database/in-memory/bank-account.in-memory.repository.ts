@@ -45,4 +45,18 @@ export class BankAccountInMemoryRepository implements IBankAccountRepository {
 
     return true;
   }
+
+  async findByIdAndUser(bankAccountId: string, userId: string): Promise<BankAccountEntity | null> {
+    const bankAccount = this.bankAccounts.find((item) => item.id === bankAccountId);
+    if (!bankAccount) {
+      return null;
+    }
+
+    const wallet = this.wallets?.find((item) => item.id === bankAccount.walletId);
+    if (!wallet || wallet.userId !== userId) {
+      return null;
+    }
+
+    return bankAccount;
+  }
 }

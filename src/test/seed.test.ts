@@ -4,6 +4,7 @@ import { faker } from "@faker-js/faker";
 import { randomUUID } from "node:crypto";
 import { BankAccountEntity } from "@/domain/Accounts/enterprise";
 import { ResetPasswordEntity, UserEntity, WalletEntity } from "@/domain/Auth/enterprise/entities";
+import { CategoryEntity, TransactionEntity, Type } from "@/domain/Finances/enterprise";
 
 const cryptoService = new CryptoService();
 
@@ -37,6 +38,15 @@ interface CreateBankAccountData {
   walletId: UniqueEntityId;
 }
 
+interface CreateTransactionData {
+  amount: Money;
+  bankAccountId: UniqueEntityId;
+  category: CategoryEntity;
+  description: string;
+  type: Type;
+  createdAt: Date;
+}
+
 export async function createUser(override: Partial<CreateUserData> = {}) {
   const salt = cryptoService.createSalt();
   const password = await cryptoService.createHashWithSalt(override.password ?? faker.internet.password(), salt);
@@ -50,12 +60,12 @@ export async function createUser(override: Partial<CreateUserData> = {}) {
 }
 
 export async function createWallet(data: Partial<CreateWalletData>) {
-  const initialBalance = faker.number.int({ min: 1000, max: 10000 });
+  const amount = faker.number.int({ min: 1000, max: 10000 });
 
   return WalletEntity.create({
     userId: new UniqueEntityId(data.userId),
-    initialBalance: data.initialBalance ?? Money.fromCents(initialBalance),
-    currentBalance: data.currentBalance ?? Money.fromCents(initialBalance),
+    initialBalance: data.initialBalance ?? Money.fromCents(amount),
+    currentBalance: data.currentBalance ?? Money.fromCents(amount),
   });
 }
 
@@ -85,4 +95,26 @@ export async function createResetPassword(override: Partial<CreateResetPasswordD
     ...override,
     token: hashToken,
   });
+}
+
+export function createTransaction(override: Partial<CreateTransactionData> = {}) {
+  const amount = faker.number.int({ min: 1000, max: 10000 });
+  const category = CategoryEntity.create({
+    colorCode: "C1C1C1",
+    name: faker.person.fullName(),
+    userId: new UniqueEntityId(),
+    createdAt: new Date(),
+  });
+
+  const transaction = TransactionEntity.create({
+    amount: Money.fromCents(amount),
+    bankAccountId: new UniqueEntityId(),
+    category,
+    description: faker.lorem.words(),
+    type: Type.income,
+    createdAt: new Date(),
+    ...override,
+  });
+
+  return transaction;
 }

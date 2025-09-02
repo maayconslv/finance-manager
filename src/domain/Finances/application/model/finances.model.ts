@@ -23,4 +23,6 @@ export interface CategoryModel {
 export interface AccountTransactionsModel {
   account: BankAccountModel;
   transactions: TransactionModel[];
+  hasMoreAfter: boolean;
+  hasMoreBefore: boolean;
 }

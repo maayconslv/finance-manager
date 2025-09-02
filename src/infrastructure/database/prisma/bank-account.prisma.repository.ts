@@ -43,8 +43,30 @@ export class BankAccountRepository implements IBankAccountRepository {
 
   async findById(bankAccountId: string): Promise<BankAccountEntity | null> {
     const bankAccount = await this.prisma.bankAccount.findUnique({
+      where: { id: bankAccountId },
+    });
+
+    if (!bankAccount) {
+      return null;
+    }
+
+    return this.serializeBankAccount(bankAccount);
+  }
+
+  async findByIdAndUser(bankAccountId: string, userId: string): Promise<BankAccountEntity | null> {
+    const bankAccount = await this.prisma.bankAccount.findUnique({
       where: {
         id: bankAccountId,
+        wallet: {
+          userId: userId,
+        },
+      },
+      include: {
+        wallet: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -53,6 +75,15 @@ export class BankAccountRepository implements IBankAccountRepository {
     }
 
     return this.serializeBankAccount(bankAccount);
+  }
+
+  async belongsToUser(bankAccountId: string, userId: string): Promise<boolean> {
+    const bankAccount = await this.prisma.bankAccount.findUnique({
+      where: { id: bankAccountId },
+      include: { wallet: true },
+    });
+
+    return bankAccount?.wallet.userId === userId;
   }
 
   private serializeBankAccount(data: BankAccount): BankAccountEntity {
@@ -68,14 +99,5 @@ export class BankAccountRepository implements IBankAccountRepository {
       },
       new UniqueEntityId(data.id),
     );
-  }
-
-  async belongsToUser(bankAccountId: string, userId: string): Promise<boolean> {
-    const bankAccount = await this.prisma.bankAccount.findUnique({
-      where: { id: bankAccountId },
-      include: { wallet: true },
-    });
-
-    return bankAccount?.wallet.userId === userId;
   }
 }

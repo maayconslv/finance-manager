@@ -9,6 +9,14 @@ type TransactionWithCategory = Prisma.TransactionGetPayload<{
   include: { bankAccount: { include: { wallet: true } }; category: true };
 }>;
 
+interface findManyByAccountRequest {
+  bankAccountId: string;
+  page: number;
+  limit: number;
+  startDate: Date;
+  endDate: Date;
+}
+
 @Service()
 export class TransactionRepository implements ITransactionRepository {
   private prisma: PrismaClient;
@@ -40,13 +48,34 @@ export class TransactionRepository implements ITransactionRepository {
     });
   }
 
-  async findManyByAccount(bankAccountId: string): Promise<TransactionEntity[]> {
-    const transactions = await this.prisma.transaction.findMany({
-      where: { bankAccountId },
-      include: { bankAccount: { include: { wallet: true } }, category: true },
-    });
+  async findManyByAccount(
+    data: findManyByAccountRequest,
+  ): Promise<{ transactions: TransactionEntity[]; total: number }> {
+    const [transactions, total] = await Promise.all([
+      this.prisma.transaction.findMany({
+        where: {
+          bankAccountId: data.bankAccountId,
+          createdAt: {
+            gte: data.startDate,
+            lt: data.endDate,
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip: (data.page - 1) * data.limit,
+        take: data.limit,
+        include: { bankAccount: { include: { wallet: true } }, category: true },
+      }),
+      this.prisma.transaction.count({
+        where: { bankAccountId: data.bankAccountId },
+      }),
+    ]);
 
-    return transactions.map(this.serializeTransaction);
+    return {
+      transactions: transactions.map(this.serializeTransaction),
+      total,
+    };
   }
 
   async findById(transactionId: string): Promise<TransactionEntity | null> {
@@ -62,7 +91,7 @@ export class TransactionRepository implements ITransactionRepository {
     return this.serializeTransaction(transaction);
   }
 
-  async findByIdAndUserId(transactionId: string, userId: string): Promise<TransactionEntity | null> {
+  async findByIdAndUser(transactionId: string, userId: string): Promise<TransactionEntity | null> {
     const transaction = await this.prisma.transaction.findUnique({
       where: { id: transactionId, bankAccount: { wallet: { userId } } },
       include: { bankAccount: { include: { wallet: true } }, category: true },

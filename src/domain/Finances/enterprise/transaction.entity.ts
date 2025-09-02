@@ -37,7 +37,7 @@ export class TransactionEntity extends BaseEntity<TransactionProps> {
   }
 
   get bankAccountId() {
-    return this.props.bankAccountId;
+    return this.props.bankAccountId.toString();
   }
 
   get createdAt() {
@@ -73,6 +73,6 @@ export class TransactionEntity extends BaseEntity<TransactionProps> {
   }
 
   static create(props: Optional<TransactionProps, "createdAt">, id?: UniqueEntityId) {
-    return new TransactionEntity({ ...props, createdAt: new Date() }, id);
+    return new TransactionEntity({ ...props, createdAt: props.createdAt ?? new Date() }, id);
   }
 }

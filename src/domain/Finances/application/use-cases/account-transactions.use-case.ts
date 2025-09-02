@@ -1,31 +1,58 @@
-import { BankAccountRepository, TransactionRepository, UserRepository } from "@/infrastructure/database/prisma";
+import { BankAccountRepository, TransactionRepository } from "@/infrastructure/database/prisma";
 import { Service } from "typedi";
 import { AccountTransactionsModel } from "../model";
-import { AccountTransactionsMapper } from "../mapper/finances.mapper";
+import { TransactionMapper } from "../mapper/finances.mapper";
+import { BankAccountMapper } from "@/domain/Accounts/application/mapper";
+import { InternalServerError } from "@/domain/errors/internal-server.error";
 
 export interface AccountTransactionsUseCaseRequest {
   userId: string;
   bankAccountId: string;
+  page: number;
+  limit: number;
+  month: number;
+  year: number;
 }
 
 @Service()
 export class AccountTransactionsUseCase {
   constructor(
-    private readonly userRepository: UserRepository,
     private readonly bankAccountRepository: BankAccountRepository,
     private readonly transactionRepository: TransactionRepository,
   ) {}
 
-  async execute(data: AccountTransactionsUseCaseRequest): Promise<AccountTransactionsModel> {
-    const user = await this.userRepository.findById(data.userId);
-    const bankAccount = await this.bankAccountRepository.findById(data.bankAccountId);
+  async execute({
+    bankAccountId,
+    userId,
+    limit,
+    page,
+    month,
+    year,
+  }: AccountTransactionsUseCaseRequest): Promise<AccountTransactionsModel> {
+    const bankAccount = await this.bankAccountRepository.findByIdAndUser(bankAccountId, userId);
 
-    if (!user || !bankAccount) {
-      throw new Error();
+    if (!bankAccount) {
+      throw new InternalServerError("This bank account was not found. Please, contact the support.");
     }
 
-    const transactions = await this.transactionRepository.findManyByAccount(data.bankAccountId);
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 1);
 
-    return AccountTransactionsMapper.toModel(transactions, bankAccount);
+    const { transactions, total } = await this.transactionRepository.findManyByAccount({
+      bankAccountId,
+      limit,
+      page,
+      endDate,
+      startDate,
+    });
+    const hasMoreAfter = page * limit < total;
+    const hasMoreBefore = page > 1;
+
+    return {
+      account: BankAccountMapper.toModel(bankAccount),
+      transactions: transactions.map(TransactionMapper.toModel),
+      hasMoreAfter,
+      hasMoreBefore,
+    };
   }
 }
