@@ -9,7 +9,19 @@ import {
   UpdateTransactionUseCase,
 } from "@/domain/Finances/application/use-cases";
 import { AccountTransactionsUseCase } from "@/domain/Finances/application/use-cases/account-transactions.use-case";
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Req, UseBefore } from "routing-controllers";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  QueryParam,
+  Req,
+  UseBefore,
+} from "routing-controllers";
 import { Service } from "typedi";
 import {
   CreateCategory,
@@ -67,9 +79,20 @@ export class FinancesController {
   })
   async accountTransactions(
     @Param("bankAccountId") bankAccountId: string,
+    @QueryParam("month") month: number,
+    @QueryParam("year") year: number,
+    @QueryParam("page") page: number,
+    @QueryParam("limit") limit: number,
     @Req() request: AuthorizedRequest,
   ): Promise<AccountTransactionsModel> {
-    return await this.accountTransactionsUseCase.execute({ bankAccountId, userId: request.user.userId });
+    return await this.accountTransactionsUseCase.execute({
+      bankAccountId,
+      userId: request.user.userId,
+      month,
+      year,
+      limit,
+      page,
+    });
   }
 
   @Get("/categories")
