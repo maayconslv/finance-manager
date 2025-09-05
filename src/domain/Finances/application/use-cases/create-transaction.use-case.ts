@@ -1,12 +1,6 @@
 import { Service } from "typedi";
 import { CategoryEntity, TransactionEntity, Type } from "../../enterprise";
-import {
-  BankAccountRepository,
-  TransactionRepository,
-  UserRepository,
-  WalletRepository,
-} from "@/infrastructure/database/prisma";
-import { NotFoundError } from "@/domain/errors";
+import { BankAccountRepository, TransactionRepository, WalletRepository } from "@/infrastructure/database/prisma";
 import { Money, UniqueEntityId } from "@/core/object-values";
 import { TransactionModel } from "../model/finances.model";
 import { TransactionMapper } from "../mapper/finances.mapper";

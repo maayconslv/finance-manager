@@ -1,5 +1,5 @@
 import { Type } from "@/domain/Finances/enterprise";
-import { IsEnum, IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsEnum, IsOptional, IsString, IsUUID } from "class-validator";
 
 export interface CreateTransactionUseCaseRequest {
   amount: number;

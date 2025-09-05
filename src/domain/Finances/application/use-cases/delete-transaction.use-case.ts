@@ -18,7 +18,7 @@ export class DeleteTransactionUseCase {
   ) {}
 
   async execute(data: DeleteTransactionUseCaseRequest): Promise<void> {
-    const transaction = await this.transactionRepository.findByIdAndUserId(data.transactionId, data.userId);
+    const transaction = await this.transactionRepository.findByIdAndUser(data.transactionId, data.userId);
     if (!transaction) {
       throw new UnauthorizedError();
     }
