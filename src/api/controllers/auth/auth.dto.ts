@@ -10,9 +10,6 @@ export class CreateUserRequest {
   @IsString({ message: "Please provide a valid password" })
   @MinLength(6, { message: "Password must be at least 6 characters long" })
   password: string;
-
-  @IsString({ message: "Please provide a valid initial balance" })
-  initialBalance: string;
 }
 
 export class AuthenticateUserRequest {

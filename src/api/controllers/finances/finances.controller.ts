@@ -5,11 +5,24 @@ import {
   CreateTransactionUseCase,
   DeleteTransactionUseCase,
   GetCategoriesUseCase,
+  GetUserSummaryUseCase,
   UpdateCategoryUseCase,
   UpdateTransactionUseCase,
 } from "@/domain/Finances/application/use-cases";
 import { AccountTransactionsUseCase } from "@/domain/Finances/application/use-cases/account-transactions.use-case";
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Req, UseBefore } from "routing-controllers";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  QueryParam,
+  Req,
+  UseBefore,
+} from "routing-controllers";
 import { Service } from "typedi";
 import {
   CreateCategory,
@@ -31,6 +44,7 @@ export class FinancesController {
     private readonly updateCategoryUseCase: UpdateCategoryUseCase,
     private readonly updateTransactionUseCase: UpdateTransactionUseCase,
     private readonly deleteTransactionUseCase: DeleteTransactionUseCase,
+    private readonly getUserUseCase: GetUserSummaryUseCase,
   ) {}
 
   @Post("/transaction/:bankAccountId")
@@ -67,9 +81,20 @@ export class FinancesController {
   })
   async accountTransactions(
     @Param("bankAccountId") bankAccountId: string,
+    @QueryParam("month") month: number,
+    @QueryParam("year") year: number,
+    @QueryParam("page") page: number,
+    @QueryParam("limit") limit: number,
     @Req() request: AuthorizedRequest,
   ): Promise<AccountTransactionsModel> {
-    return await this.accountTransactionsUseCase.execute({ bankAccountId, userId: request.user.userId });
+    return await this.accountTransactionsUseCase.execute({
+      bankAccountId,
+      userId: request.user.userId,
+      month,
+      year,
+      limit,
+      page,
+    });
   }
 
   @Get("/categories")
@@ -121,5 +146,19 @@ export class FinancesController {
     @Req() request: AuthorizedRequest,
   ): Promise<void> {
     return await this.deleteTransactionUseCase.execute({ transactionId, userId: request.user.userId });
+  }
+
+  @Get("/me")
+  @UseBefore(AuthMiddleware)
+  @OpenAPI({
+    summary: "Get user summary",
+    security: [{ bearerAuth: [] }],
+  })
+  async getUser(
+    @Req() request: AuthorizedRequest,
+    @QueryParam("month") month: number,
+    @QueryParam("year") year: number,
+  ) {
+    return await this.getUserUseCase.execute({ month, year, userId: request.user.userId });
   }
 }

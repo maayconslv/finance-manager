@@ -11,6 +11,7 @@ export interface TransactionModel {
   type: Type;
   description: string;
   category: CategoryModel;
+  createdAt: Date;
 }
 
 export interface CategoryModel {
@@ -22,4 +23,20 @@ export interface CategoryModel {
 export interface AccountTransactionsModel {
   account: BankAccountModel;
   transactions: TransactionModel[];
+  hasMoreAfter: boolean;
+  hasMoreBefore: boolean;
+}
+
+export interface TransactionWithDisableFlagModel extends TransactionModel {
+  isFromDisabledAccount: boolean;
+}
+
+export interface UserSummaryModel {
+  summary: {
+    totalIncome: string;
+    totalOutcome: string;
+    balance: string;
+  };
+  bankAccounts: BankAccountModel[];
+  transactions: TransactionWithDisableFlagModel[];
 }

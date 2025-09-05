@@ -4,12 +4,12 @@ import { UserRepository, WalletRepository } from "@/infrastructure/database/pris
 import { Service } from "typedi";
 import { UserEntity, WalletEntity } from "../../enterprise/entities";
 import { UserModel } from "../model";
+import { Money, UniqueEntityId } from "@/core/object-values";
 
 interface CreateUserUseCaseProps {
   name: string;
   email: string;
   password: string;
-  initialBalance: string;
 }
 
 @Service()
@@ -18,9 +18,10 @@ export class CreateUserUseCase {
     private cryptoService: CryptoService,
     private userRepository: UserRepository,
     private walletRepository: WalletRepository,
+    private readonly DEFAULT_BALANCE: string = "00,00",
   ) {}
 
-  async execute({ email, name, password, initialBalance }: CreateUserUseCaseProps): Promise<UserModel> {
+  async execute({ email, name, password }: CreateUserUseCaseProps): Promise<UserModel> {
     this.validateUserPassword(password);
 
     const userAlreadyExists = await this.userRepository.findByEmail(email);
@@ -32,7 +33,12 @@ export class CreateUserUseCase {
     const passwordHash = await this.cryptoService.createHashWithSalt(password, salt);
 
     const user = UserEntity.createWithCredentials(email, name, passwordHash, salt);
-    const wallet = WalletEntity.createWithInitialBalance(user.id, initialBalance);
+    const wallet = WalletEntity.create({
+      currentBalance: new Money(this.DEFAULT_BALANCE),
+      initialBalance: new Money(this.DEFAULT_BALANCE),
+      userId: new UniqueEntityId(user.id),
+      createdAt: new Date(),
+    });
 
     await this.userRepository.save(user);
     await this.walletRepository.save(wallet);

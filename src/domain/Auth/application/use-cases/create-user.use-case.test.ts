@@ -20,7 +20,6 @@ describe("Application - Create a new user - Use cases", () => {
     email: faker.internet.email(),
     name: faker.person.fullName(),
     password: faker.internet.password(),
-    initialBalance: "10.000,00",
   };
 
   before(() => {

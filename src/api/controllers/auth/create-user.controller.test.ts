@@ -14,7 +14,6 @@ describe("Controller - Register a new user - POST", () => {
     email: faker.internet.email(),
     name: faker.person.fullName(),
     password: faker.internet.password(),
-    initialBalance: "10.000,00",
   };
 
   before(() => {
@@ -104,8 +103,12 @@ describe("Controller - Register a new user - POST", () => {
       });
 
       const userResponse = response.body.data;
-      const userDatabase = await prismaRepository.user.findUniqueOrThrow({ where: { email: userData.email } });
-      const walletDatabase = await prismaRepository.wallet.findUniqueOrThrow({ where: { userId: userDatabase.id } });
+      const userDatabase = await prismaRepository.user.findUniqueOrThrow({
+        where: { email: userData.email },
+      });
+      const walletDatabase = await prismaRepository.wallet.findUniqueOrThrow({
+        where: { userId: userDatabase.id },
+      });
 
       expect(userResponse.email).to.equal(userData.email);
       expect(userData.email).to.equal(userDatabase.email);
@@ -115,7 +118,6 @@ describe("Controller - Register a new user - POST", () => {
       expect(userDatabase.id).to.be.equal(userResponse.id);
       expect(userResponse.wallet.id).to.be.equal(walletDatabase.id);
       expect(userResponse.wallet.userId).to.be.equal(userDatabase.id);
-      expect(userResponse.wallet.currentBalance.slice(3)).to.be.equal(userData.initialBalance);
     });
 
     it("should not be able to create a new user with an email that already exists", async () => {

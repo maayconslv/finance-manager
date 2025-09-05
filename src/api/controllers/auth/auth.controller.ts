@@ -14,9 +14,9 @@ import { AuthenticateUserRequest, CreateUserRequest, ForgotPasswordRequest, Upda
 @Service()
 export class AuthController {
   constructor(
-    private createUserUseCase: CreateUserUseCase,
-    private authenticateUserUseCase: AuthenticateUseCase,
-    private forgotPasswordUseCase: ForgotPasswordUseCase,
+    private readonly createUserUseCase: CreateUserUseCase,
+    private readonly authenticateUserUseCase: AuthenticateUseCase,
+    private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
     private readonly updatePasswordUseCase: UpdatePasswordUseCase,
   ) {}
 

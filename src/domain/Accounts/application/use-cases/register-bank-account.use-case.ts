@@ -27,19 +27,17 @@ export class RegisterBankAccountUseCase {
       throw new InternalServerError("This user does not have an associated wallet.");
     }
 
-    const initialBalance = new Money(data.amount);
-    const currentBalance = new Money(data.amount);
     const bankAccount = BankAccountEntity.create({
       accountName: data.accountName,
       bankName: data.bankName,
-      currentBalance,
-      initialBalance,
+      currentBalance: new Money(data.amount),
+      initialBalance: new Money(data.amount),
       walletId: new UniqueEntityId(wallet.id),
     });
 
     wallet.increaseAmountInCents = bankAccount.currentBalance.getInCents();
-    await this.walletRepository.save(wallet);
-    await this.bankAccountRepository.save(bankAccount);
+
+    await Promise.all([this.walletRepository.save(wallet), this.bankAccountRepository.save(bankAccount)]);
 
     return BankAccountMapper.toModel(bankAccount);
   }

@@ -4,7 +4,7 @@ export interface BankAccountModel {
   bankName: string;
   initialBalance: string;
   currentBalance: string;
-  isDisabled: boolean;
+  isDisable: boolean;
 }
 
 export interface WalletModel {
