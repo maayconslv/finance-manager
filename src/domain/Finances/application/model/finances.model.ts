@@ -26,3 +26,17 @@ export interface AccountTransactionsModel {
   hasMoreAfter: boolean;
   hasMoreBefore: boolean;
 }
+
+export interface TransactionWithDisableFlagModel extends TransactionModel {
+  isFromDisabledAccount: boolean;
+}
+
+export interface UserSummaryModel {
+  summary: {
+    totalIncome: string;
+    totalOutcome: string;
+    balance: string;
+  };
+  bankAccounts: BankAccountModel[];
+  transactions: TransactionWithDisableFlagModel[];
+}

@@ -5,6 +5,7 @@ import {
   CreateTransactionUseCase,
   DeleteTransactionUseCase,
   GetCategoriesUseCase,
+  GetUserSummaryUseCase,
   UpdateCategoryUseCase,
   UpdateTransactionUseCase,
 } from "@/domain/Finances/application/use-cases";
@@ -43,6 +44,7 @@ export class FinancesController {
     private readonly updateCategoryUseCase: UpdateCategoryUseCase,
     private readonly updateTransactionUseCase: UpdateTransactionUseCase,
     private readonly deleteTransactionUseCase: DeleteTransactionUseCase,
+    private readonly getUserUseCase: GetUserSummaryUseCase,
   ) {}
 
   @Post("/transaction/:bankAccountId")
@@ -144,5 +146,19 @@ export class FinancesController {
     @Req() request: AuthorizedRequest,
   ): Promise<void> {
     return await this.deleteTransactionUseCase.execute({ transactionId, userId: request.user.userId });
+  }
+
+  @Get("/me")
+  @UseBefore(AuthMiddleware)
+  @OpenAPI({
+    summary: "Get user summary",
+    security: [{ bearerAuth: [] }],
+  })
+  async getUser(
+    @Req() request: AuthorizedRequest,
+    @QueryParam("month") month: number,
+    @QueryParam("year") year: number,
+  ) {
+    return await this.getUserUseCase.execute({ month, year, userId: request.user.userId });
   }
 }

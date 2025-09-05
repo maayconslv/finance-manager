@@ -121,6 +121,37 @@ export class TransactionRepository implements ITransactionRepository {
     });
   }
 
+  async findManyByMonthAndUser(userId: string, month: number, year: number): Promise<TransactionEntity[]> {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 1);
+
+    const transactions = await this.prisma.transaction.findMany({
+      where: {
+        bankAccount: {
+          wallet: {
+            userId,
+          },
+        },
+        createdAt: {
+          gte: startDate,
+          lt: endDate,
+        },
+      },
+      take: 20,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        bankAccount: {
+          include: { wallet: true },
+        },
+        category: true,
+      },
+    });
+
+    return transactions.map(this.serializeTransaction);
+  }
+
   private serializeTransaction(data: TransactionWithCategory): TransactionEntity {
     return TransactionEntity.create(
       {
